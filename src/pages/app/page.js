@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Dropdown from '../components/Dropdown';
 
 export default function Page() {
     return( 
@@ -17,7 +18,7 @@ export default function Page() {
           <button className="bg-indigo-500 hover:bg-cyan-600 rounded-md border-spacing-">
           save and Change
           </button>
-          
+          <Dropdown />
         </div>
       </div>
       
