@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Dropdown from '../components/Dropdown';
+import TextField from '../components/TextField';
 
 export default function Page() {
     return( 
@@ -19,6 +20,7 @@ export default function Page() {
           save and Change
           </button>
           <Dropdown />
+          <TextField label="Name" placeholder="Dein Name" />
         </div>
       </div>
       
