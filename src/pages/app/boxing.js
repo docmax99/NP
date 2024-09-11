@@ -15,7 +15,8 @@ export default function Boxing() {
         </div>
 
         
-        <div class="bg-blue-500 w-full h-24"></div>
+        <div class="bg-blue-500 w-full h-24"></div> //Flex Box 1/4 Einfügen 
+        
 
         
         <div class="flex gap-4">
@@ -40,15 +41,7 @@ export default function Boxing() {
         <div class="bg-green-400 w-full h-24"></div>
         
     </div>
-    
-        
-
-    
-      
-    
-
-
-      
+          
       
     
 
