@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Dropdown from '../components/Dropdown';
+import TextField from '../components/TextField';
 
 
 export default function Boxing() {
@@ -15,7 +16,13 @@ export default function Boxing() {
         </div>
 
         
-        <div class="bg-blue-500 w-full h-24"></div> //Flex Box 1/4 Einfügen 
+        
+        <div className="flex gap-0">
+            <div className="w-1/6 ml-44 "><TextField label="Wohin?" placeholder="Reiseziel" /></div>
+            <div className="w-1/14 "><TextField label="Anreise" placeholder="Datum" /></div>
+            <div className="w-1/14 "><TextField label="Abreise" placeholder="Datum" /></div>
+            <div className="w-1/16 "><TextField label="Wer?" placeholder="Anzahl der Gäste" /></div>
+        </div>
         
 
         
