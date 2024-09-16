@@ -12,7 +12,7 @@ export default function Boxing() {
             <div class="bg-red-400 w-1/2 h-24">
              <Image src="/Images/LogoNicePlaces.png" width={140} height={140} alt="Logo" className="mt-4 ml-6"/> 
              </div>
-            <div class="bg-yellow-300 w-1/2 h-24"><Dropdown/></div>
+            <div class="bg-yellow-300 w-1/2 h-24 flex flex-col "><Dropdown/></div> 
         </div>
 
         
