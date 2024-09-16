@@ -16,14 +16,16 @@ export default function Boxing() {
         </div>
 
         
-        
-        <div className="flex gap-0">
-            <div className="w-1/6 ml-44"><TextField label="Wohin?" placeholder="Reiseziel" /></div>
-            <div className="w-1/14 "><TextField label="Anreise" placeholder="Datum" /></div>
-            <div className="w-1/14 "><TextField label="Abreise" placeholder="Datum" /></div>
-            <div className="w-1/16 "><TextField label="Wer?" placeholder="Anzahl der Gäste" /></div>
+        <div className="flex gap-3">
+            <div className="w-2/12"></div>
+            <div className="flex gap-0 border-2 rounded-2xl border-white w-8/12 bg-white ">
+                <div className="w-1/6 "><TextField label="Wohin?" placeholder="Reiseziel" /></div>
+                <div className="w-1/14 "><TextField label="Anreise" placeholder="Datum" /></div>
+                <div className="w-1/14 "><TextField label="Abreise" placeholder="Datum" /></div>
+                <div className="w-1/16 "><TextField label="Wer?" placeholder="Anzahl der Gäste" /></div>
+            </div>
+            <div className="w-2/12"></div>
         </div>
-        
 
         
         <div class="flex gap-4">
