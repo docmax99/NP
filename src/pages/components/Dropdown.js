@@ -37,17 +37,17 @@ export default function Dropdown() {
               className="block px-4 py-10 text-4xl text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               role="menuitem"
             >
-              Registrieren
-            </a>
-            <a
-              href="/"
-              className="block px-4 py-10 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              role="menuitem"
-            >
               Anmelden
             </a>
             <a
-              href="#"
+              href="/app/login"
+              className="block px-4 py-10 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              role="menuitem"
+            >
+              Registrieren
+            </a>
+            <a
+              href="/app/register"
               className="block px-4 py-10 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               role="menuitem"
             >
