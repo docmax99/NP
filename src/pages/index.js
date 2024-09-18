@@ -9,7 +9,7 @@ export default function Home() {
       <p>Dies ist die Startseite der Anwendung.</p>
       </Link>
       <p> Das ist der Test</p>
-      <p class="text-sky-400">The quick brown fox...</p>
+      <p className="text-sky-400">The quick brown fox...</p>
     </div>
     
   );
