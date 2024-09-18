@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import { useRouter } from 'next/router' // Für das Navigieren zu einer neuen Seite
-import { supabase } from '../components/lib/supabaseClient'
-import bcrypt from 'bcryptjs'
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { supabase } from '../components/lib/supabaseClient';
+import bcrypt from 'bcryptjs';
 import Image from "next/image";
 
 export default function Register() {
-  const router = useRouter(); // Router verwenden, um Navigation zu steuern
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -18,19 +18,19 @@ export default function Register() {
     zahlungsinfo: '',
     profilbild: '',
     land: '',
-  })
-  
+  });
+
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   const handleRegister = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Überprüfen, ob alle Felder ausgefüllt sind
     const allFieldsFilled = Object.values(formData).every(field => field.trim() !== '');
@@ -41,13 +41,13 @@ export default function Register() {
 
     try {
       // Passwort hashen
-      const hashedPassword = await bcrypt.hash(formData.password, 10)
+      const hashedPassword = await bcrypt.hash(formData.password, 10);
 
       // Benutzer bei Supabase authentifizieren
       const { user, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password, // Das unverschlüsselte Passwort wird für Auth verwendet
-      })
+      });
 
       if (authError) {
         // Überprüfen, ob die E-Mail bereits registriert ist
@@ -57,10 +57,10 @@ export default function Register() {
             router.push('/app/login'); // Weiterleitung zur Login-Seite
           }, 5000); // Weiterleitung nach 5 Sekunden
         } else {
-          console.log('Fehler bei der Registrierung:', authError.message)
+          console.log('Fehler bei der Registrierung:', authError.message);
           setError(authError.message);
         }
-        return
+        return;
       }
 
       // Benutzerinformationen in die Datenbanktabelle einfügen
@@ -80,7 +80,7 @@ export default function Register() {
             Profilbild: formData.profilbild,
             Land: formData.land,
           },
-        ])
+        ]);
 
       if (insertError) {
         // Abfangen des Fehlers für die doppelte E-Mail (Duplicate key)
@@ -90,22 +90,22 @@ export default function Register() {
             router.push('/app/login'); // Weiterleitung zur Login-Seite nach 5 Sekunden
           }, 4000);
         } else {
-          console.log('Fehler beim Einfügen in die Tabelle:', insertError.message)
+          console.log('Fehler beim Einfügen in die Tabelle:', insertError.message);
           setError(insertError.message);
         }
-        return
+        return;
       }
 
-      console.log('Benutzer erfolgreich registriert:', data)
+      console.log('Benutzer erfolgreich registriert:', data);
 
-      // Weiterleitung zu /app/boxing, wenn alles erfolgreich war
-      router.push('/app/boxing');
+      // Weiterleitung zur Bestätigungsseite
+      router.push('/confirmation');
 
     } catch (err) {
-      console.log('Fehler bei der Registrierung:', err.message)
+      console.log('Fehler bei der Registrierung:', err.message);
       setError(err.message);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-[url('/Images/BackgroundRG.png')] bg-cover bg-center flex items-center justify-center">
@@ -199,5 +199,5 @@ export default function Register() {
       {/* Overlay für bessere Lesbarkeit */}
       <div className="absolute inset-0 "></div>
     </div>
-  )
+  );
 }

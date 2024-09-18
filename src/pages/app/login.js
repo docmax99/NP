@@ -36,8 +36,8 @@ export default function Login() {
     }
 
     console.log('Erfolgreich angemeldet:', user)
-    // Weiterleitung zu /app/boxing nach erfolgreicher Anmeldung
-    router.push('/app/boxing')
+    // Weiterleitung zu /app/home nach erfolgreicher Anmeldung
+    router.push('/app/home')
   }
 
   const handlePasswordReset = async () => {

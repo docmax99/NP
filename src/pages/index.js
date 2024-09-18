@@ -5,7 +5,7 @@ export default function Home() {
     <div>
      
       <h1>Willkommen auf meiner Next.js-Seite!</h1>
-      <Link href={'/app/page'}>
+      <Link href={'/app/home'}>
       <p>Dies ist die Startseite der Anwendung.</p>
       </Link>
       <p> Das ist der Test</p>
