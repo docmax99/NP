@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import Dropdown from '../components/Dropdown';
-import TextField from '../components/TextField';
+import Dropdown from '../../components/Dropdown';
+import TextField from '../../components/TextField';
 import { useState } from 'react';
 
 export default function Home() {

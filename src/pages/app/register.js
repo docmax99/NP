@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../components/lib/supabaseClient';
+import { supabase } from '../../components/lib/supabaseClient';
 import bcrypt from 'bcryptjs';
 import Image from "next/image";
 
