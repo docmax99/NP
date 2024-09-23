@@ -1,12 +1,30 @@
 import Link from "next/link";
 import Image from "next/image";
 import Dropdown from '../../components/Dropdown';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BookingCard from "../../components/BookingCard";
 import ListingInfo from "../../components/ListingInfos";
+import { getAllHouses } from "../../services/houseService";
 
 export default function Unterkunft() {
   const [showCookieBanner, setShowCookieBanner] = useState(true);
+  const [house, setHouse] = useState(null);
+  const houseId = 2; // Hier kannst du die ID des Hauses manuell setzen
+  const Beschreibung = house ? house.Beschreibung : 0; ;
+
+  useEffect(() => {
+    const fetchHouse = async () => {
+      const houseData = await getAllHouses();
+      console.log("House data", houseData);
+      const selectedHouse = houseData.find(h => h.Haus_Id === houseId); // Finde das Haus basierend auf der ID
+      setHouse(selectedHouse);
+      console.log("Haus: " + selectedHouse);
+    };
+
+    fetchHouse();
+    }, []);
+
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -20,7 +38,9 @@ export default function Unterkunft() {
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center gap-4 p-2 bg-gray-100">
-        <h1 className="text-4xl text-inherit"> Dreamhouse </h1>
+      <div className="text-4xl text-inherit">
+          {house ? (<h1>{house.Titel}</h1>  ) : (<p>Haus wird geladen...</p>  )}
+        </div>
         {/* Responsives 3x3 Grid Layout */}
         <div className="grid grid-cols-4 grid-rows-[2fr_1fr] gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
           {/* Erstes Bild (nimmt 2 Spalten und 2 Reihen ein) */}
@@ -50,9 +70,7 @@ export default function Unterkunft() {
           {/* Text */}
           <div className="col-span-1 row-span-1">
             <h1 className="text-lg font-bold">Dreamhouse</h1>
-            <p className="text-sm">
-              Ein einzigartiges Hobbit-ähnliches Haus in den malerischen Hügeln von Mittelerde. Perfekt für einen ruhigen Rückzugsort inmitten der Natur.
-            </p>
+            <span className="text-base"> {`${Beschreibung}`} </span>
           </div>
 
           {/* Drittes Bild */}
@@ -83,10 +101,10 @@ export default function Unterkunft() {
         {/* Buchung und weitere Informationen */}
         <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[500vh] ">
           <div className="w-full ">
-            <ListingInfo />
+            <ListingInfo house={house}/>
           </div>
           <div className="w-full  ">
-            <BookingCard />
+            <BookingCard house={house}/>
           </div>
         </div>
 

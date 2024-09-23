@@ -2,12 +2,22 @@
 import Image from 'next/image';
 
 export default function ListingInfo({house}) {
+  const Badezimmer = house ? house.Badezimmer : 0; 
+  const Schlafzimmer = house ? house.Schlafzimmer : 0;
+  const Betten = house ? house.Betten : 0;
+  const Gästeanzahl = house ? house.Gästeanzahl : 0;
+  const Bewertung = house ? house.Bewertungen_int : 0;
+  
+
+
+
   return (
     <div className="max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg">
       {/* Unterkunft Titel und Details */}
-      <div className="mb-4">
+      <div className="mb-4" >
         <h1 className="text-2xl font-bold">Ein Verträumtes Häuschen im Auenland</h1>
-        <p className="text-gray-600">6 Gäste · 3 Schlafzimmer · 4 Betten · 2 Badezimmer</p>
+        <span className="text-gray-600">{`${Gästeanzahl}`} Gäste · {`${Schlafzimmer}`} Schlafzimmer · {`${Betten}`} Betten · {`${Badezimmer}`} Badezimmer</span>
+        
         
       </div>
 
@@ -22,7 +32,7 @@ export default function ListingInfo({house}) {
           <p className="text-sm">★★★★★</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold">111</p>
+          <span className="text-2xl font-bold"> {`${Bewertung}`} </span>
           <p className="text-sm underline">Reviews</p>
         </div>
       </div>
