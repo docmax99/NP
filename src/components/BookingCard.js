@@ -4,10 +4,10 @@ import ReserveButton from './BookingComp/ReserveButton';
 import PriceBreakdown from './BookingComp/PriceBreakdown';
 import TotalSection from './BookingComp/TotalSection';
 
-export default function BookingCard() {
+export default function BookingCard({house}) {
   return (
     <div className="flex flex-col max-w-sm mx-auto bg-white rounded-lg shadow-xl p-6 sticky top-10">
-      <PriceSection />
+      <PriceSection price={house? house.Kosten : 0}/>
       <BookingInputs />
       <ReserveButton />
       <p className="text-gray-600 text-center mb-4 text-sm">Sie werden noch nicht belastet</p>

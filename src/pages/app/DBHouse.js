@@ -14,12 +14,16 @@ export default function Unterkunft() {
   useEffect(() => {
     const fetchHouse = async () => {
       const houseData = await getAllHouses();
-      const selectedHouse = houseData.find(h => h.id === 2); // Finde das Haus basierend auf der ID
+      console.log("House data", houseData);
+      const selectedHouse = houseData.find(h => h.Haus_Id === houseId); // Finde das Haus basierend auf der ID
       setHouse(selectedHouse);
+      console.log("Haus: " + selectedHouse);
     };
 
     fetchHouse();
     }, []);
+
+
 
     
 
@@ -37,7 +41,7 @@ export default function Unterkunft() {
       <main className="flex-grow flex flex-col items-center gap-4 p-2 bg-gray-100">
       <div className="text-4xl text-inherit">
           {house ? (
-            <h1>{house.Title_Name}</h1>  // Überschrift wird angezeigt, wenn house geladen ist
+            <h1>{house.Titel}</h1>  // Überschrift wird angezeigt, wenn house geladen ist
           ) : (
             <p>Haus wird geladen...</p>  // Ladeanzeige während des Ladens
           )}
@@ -104,10 +108,10 @@ export default function Unterkunft() {
         {/* Buchung und weitere Informationen */}
         <div className="bg-gray-100 flex flex-col sm:flex-row w-full max-w-6xl shadow-2xl rounded-xl p-4">
           <div className="w-full sm:w-1/2">
-            <ListingInfo />
+            <ListingInfo house={house} />
           </div>
           <div className="w-full sm:w-1/2">
-            <BookingCard />
+            <BookingCard house={house}/>
           </div>
         </div>
       </main>

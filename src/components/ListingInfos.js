@@ -1,13 +1,14 @@
 
 import Image from 'next/image';
 
-export default function ListingInfo() {
+export default function ListingInfo({house}) {
   return (
     <div className="max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg">
       {/* Unterkunft Titel und Details */}
       <div className="mb-4">
         <h1 className="text-2xl font-bold">Ein Verträumtes Häuschen im Auenland</h1>
-        <p className="text-gray-600">6 Gäste · 3 Schlafzimmer · 4 Betten · 1 Badezimmer</p>
+        <p className="text-gray-600">6 Gäste · 3 Schlafzimmer · 4 Betten · 2 Badezimmer</p>
+        
       </div>
 
       {/* Bewertung und Favoriten */}
