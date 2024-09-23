@@ -8,16 +8,20 @@ import { getAllHouses } from "../../services/houseService";
 
 export default function Unterkunft() {
   const [showCookieBanner, setShowCookieBanner] = useState(true);
-  const [houseName, setHouseName] = useState([]);  // Hausnamen im Array speichern
+  const [house, setHouse] = useState(null);
+  const houseId = 2; // Hier kannst du die ID des Hauses manuell setzen
 
-  useEffect(() => { 
+  useEffect(() => {
     const fetchHouse = async () => {
       const houseData = await getAllHouses();
-      setHouseName(houseData);  // Die abgerufenen Hausdaten werden im Zustand gespeichert
+      const selectedHouse = houseData.find(h => h.id === 2); // Finde das Haus basierend auf der ID
+      setHouse(selectedHouse);
     };
 
-    fetchHouse();  // Rufe die Funktion auf, um die Daten zu holen
-  }, []);
+    fetchHouse();
+    }, []);
+
+    
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -31,15 +35,13 @@ export default function Unterkunft() {
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center gap-4 p-2 bg-gray-100">
-        <div className="text-4xl text-inherit">
-        {houseName.length > 0 ? (
-          houseName.map((house, index) => (
-            <p key={index}>{house.HouseName || "Kein Hausname verfügbar"}</p>
-          ))
-        ) : (
-          <p>Keine Häuser gefunden</p>
-        )}
-          </div>
+      <div className="text-4xl text-inherit">
+          {house ? (
+            <h1>{house.Title_Name}</h1>  // Überschrift wird angezeigt, wenn house geladen ist
+          ) : (
+            <p>Haus wird geladen...</p>  // Ladeanzeige während des Ladens
+          )}
+        </div>
         {/* Responsives 3x3 Grid Layout */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
           {/* Erstes Bild (nimmt 2 Spalten und 2 Reihen ein) */}

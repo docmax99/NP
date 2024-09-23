@@ -22,9 +22,9 @@ export default function Unterkunft() {
       <main className="flex-grow flex flex-col items-center gap-4 p-2 bg-gray-100">
         <h1 className="text-4xl text-inherit"> Dreamhouse </h1>
         {/* Responsives 3x3 Grid Layout */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
+        <div className="grid grid-cols-4 grid-rows-[2fr_1fr] gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
           {/* Erstes Bild (nimmt 2 Spalten und 2 Reihen ein) */}
-          <div className="col-span-2 row-span-2">
+          <div className="col-span-2 row-span-1">
             <Image
               src="/Images/Hobbit.png"
               layout="responsive"
@@ -36,7 +36,7 @@ export default function Unterkunft() {
           </div>
 
           {/* Zweites Bild */}
-          <div className="md:col-span-2 md:row-span-2 sm:col-span-1 lg:col-span-2">
+          <div className="col-span-2 row-span-1">
             <Image
               src="/Images/HobbitPic/Room1Hobbit.png"
               layout="responsive"
@@ -48,7 +48,7 @@ export default function Unterkunft() {
           </div>
 
           {/* Text */}
-          <div className="md:col-span-2 md:row-span-1 flex flex-col justify-between p-2  rounded-xl">
+          <div className="col-span-1 row-span-1">
             <h1 className="text-lg font-bold">Dreamhouse</h1>
             <p className="text-sm">
               Ein einzigartiges Hobbit-ähnliches Haus in den malerischen Hügeln von Mittelerde. Perfekt für einen ruhigen Rückzugsort inmitten der Natur.
@@ -56,19 +56,19 @@ export default function Unterkunft() {
           </div>
 
           {/* Drittes Bild */}
-          <div className="md:col-span-1 md:row-span-2 sm:col-span-1">
+          <div className="col-span-2 row-span-1">
             <Image
               src="/Images/HobbitPic/Room2Hobbit.png"
               layout="responsive"
               width={900}
               height={450}
               alt="Room 2 Hobbit"
-              className="w-full h-full object-cover rounded-xl"
+              className="w-full aspect-[2/1] object-cover rounded-xl"
             />
           </div>
 
           {/* Viertes Bild */}
-          <div className="md:col-span-1 md:row-span-2 sm:col-span-1">
+          <div className="col-span-1 row-span-1">
             <Image
               src="/Images/HobbitPic/Room3Hobbit.png"
               layout="responsive"
@@ -81,14 +81,16 @@ export default function Unterkunft() {
         </div>
 
         {/* Buchung und weitere Informationen */}
-        <div className="bg-gray-100 flex flex-col sm:flex-row w-full max-w-6xl shadow-2xl rounded-xl p-4">
-          <div className="w-full sm:w-1/2">
+        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[500vh] ">
+          <div className="w-full ">
             <ListingInfo />
           </div>
-          <div className="w-full sm:w-1/2">
+          <div className="w-full  ">
             <BookingCard />
           </div>
         </div>
+
+        <p className="h-[500vh]">Test</p>
       </main>
 
       {/* Footer */}

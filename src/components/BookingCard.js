@@ -6,7 +6,7 @@ import TotalSection from './BookingComp/TotalSection';
 
 export default function BookingCard() {
   return (
-    <div className="flex flex-col max-w-sm mx-auto bg-white rounded-lg shadow-xl p-6">
+    <div className="flex flex-col max-w-sm mx-auto bg-white rounded-lg shadow-xl p-6 sticky top-10">
       <PriceSection />
       <BookingInputs />
       <ReserveButton />
