@@ -46,7 +46,7 @@ export default function Unterkunft() {
           {/* Erstes Bild (nimmt 2 Spalten und 2 Reihen ein) */}
           <div className="col-span-2 row-span-1">
             <Image
-              src="/Images/Hobbit.png"
+              src="/Images/HobbitPic/Hobbit.png"
               layout="responsive"
               width={500}  // Relative Bildgröße
               height={500}  // Relative Bildgröße
