@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Image from "next/image";
 import Dropdown from '../../components/Dropdown';
@@ -5,7 +6,25 @@ import TextField from '../../components/TextField';
 import { useState } from 'react';
 
 export default function Home() {
+  // State-Variablen für die Textfelder
+  const [destination, setDestination] = useState('');
+  const [arrivalDate, setArrivalDate] = useState('');
+  const [departureDate, setDepartureDate] = useState('');
+  const [guests, setGuests] = useState('');
   const [showCookieBanner, setShowCookieBanner] = useState(true);
+
+  // Funktion für den Klick auf den "Suchen"-Button
+  const handleSearch = () => {
+    console.log('Reiseziel:', destination);
+    console.log('Anreise:', arrivalDate);
+    console.log('Abreise:', departureDate);
+    console.log('Anzahl der Gäste:', guests);
+    //Öffnen der seite suchliste.js
+    window.location.href = '/app/suchliste';
+
+
+    // Hier können die Daten weiter verarbeitet oder an eine API gesendet werden
+  };
 
   return (
     <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
@@ -22,22 +41,48 @@ export default function Home() {
         {/* Search Bar */}
         <div className="w-full max-w-6xl">
           <div className="flex gap-4 border rounded-full bg-white shadow-lg p-6 items-center">
-            <TextField label="Wohin?" placeholder="  Reiseziel" />
-            <TextField label="Anreise" placeholder="  Datum" />
-            <TextField label="Abreise" placeholder="  Datum" />
-            <TextField label="Wer?" placeholder="  Anzahl der Gäste" />
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Suchen</button>
+            <TextField
+              label="Wohin?"
+              placeholder="  Reiseziel"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+            />
+            <TextField
+              label="Anreise"
+              placeholder="  Datum"
+              value={arrivalDate}
+              onChange={(e) => setArrivalDate(e.target.value)}
+            />
+            <TextField
+              label="Abreise"
+              placeholder="  Datum"
+              value={departureDate}
+              onChange={(e) => setDepartureDate(e.target.value)}
+            />
+            <TextField
+              label="Wer?"
+              placeholder="  Anzahl der Gäste"
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+            />
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" onClick={handleSearch}
+            >
+              Suchen
+            </button>
           </div>
         </div>
 
         {/* Featured Listings 3x3 Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {/* Card Example */}
           <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
             <Link href="/app/houseHobbit">
-            <Image src="/Images/HobbitPic/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
+              <Image src="/Images/HobbitPic/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
             </Link>  
             <h2 className="text-lg font-semibold mt-4">Dreamhouse</h2>
           </div>
+          {/* Weitere Cards */}
           <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
             <Image src="/Images/Berghaus.png" width={400} height={300} alt="BergHaus" className="w-full h-48 object-cover rounded-t-xl" />
             <h2 className="text-lg font-semibold mt-4">BergHaus</h2>
@@ -46,30 +91,7 @@ export default function Home() {
             <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
             <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
           </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Dreamhouse</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Berghaus.png" width={400} height={300} alt="BergHaus" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">BergHaus</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Dreamhouse</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Berghaus.png" width={400} height={300} alt="BergHaus" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">BergHaus</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
-          </div>
+          {/* Weitere Karten können hinzugefügt werden */}
         </div>
       </main>
 
