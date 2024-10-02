@@ -77,7 +77,6 @@ export default function Dropdown() {
   };
 
   const menuItems = [
-    { href: '/app/login', label: 'Anmelden' },
     { href: '/app/register', label: 'Registrieren' },
     { href: '#', label: 'Hilfe' },
   ];
