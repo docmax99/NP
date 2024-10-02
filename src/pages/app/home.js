@@ -4,26 +4,31 @@ import Image from "next/image";
 import Dropdown from '../../components/Dropdown';
 import TextField from '../../components/TextField';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+
 
 export default function Home() {
   // State-Variablen für die Textfelder
-  const [destination, setDestination] = useState('');
-  const [arrivalDate, setArrivalDate] = useState('');
-  const [departureDate, setDepartureDate] = useState('');
-  const [guests, setGuests] = useState('');
   const [showCookieBanner, setShowCookieBanner] = useState(true);
+  
+  const [inputData, setInputData] = useState({
+    destination: '',
+    arrivalDate: '',
+    departureDate: '',
+    guests: '',
+  });
+  
+  const router = useRouter();
 
-  // Funktion für den Klick auf den "Suchen"-Button
+  const handleChange = (e) => {
+    setInputData({ ...inputData, [e.target.name]: e.target.value });
+  };
+
   const handleSearch = () => {
-    console.log('Reiseziel:', destination);
-    console.log('Anreise:', arrivalDate);
-    console.log('Abreise:', departureDate);
-    console.log('Anzahl der Gäste:', guests);
-    //Öffnen der seite suchliste.js
-    window.location.href = '/app/suchliste';
-
-
-    // Hier können die Daten weiter verarbeitet oder an eine API gesendet werden
+    router.push({
+      pathname: '/app/suchliste',
+      query: { ...inputData },
+    });
   };
 
   return (
@@ -39,34 +44,69 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex flex-col items-center gap-8 p-6">
         {/* Search Bar */}
+        
         <div className="w-full max-w-6xl">
           <div className="flex gap-4 border rounded-full bg-white shadow-lg p-6 items-center">
-            <TextField
-              label="Wohin?"
-              placeholder="  Reiseziel"
-              value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-            />
-            <TextField
-              label="Anreise"
-              placeholder="  Datum"
-              value={arrivalDate}
-              onChange={(e) => setArrivalDate(e.target.value)}
-            />
-            <TextField
-              label="Abreise"
-              placeholder="  Datum"
-              value={departureDate}
-              onChange={(e) => setDepartureDate(e.target.value)}
-            />
-            <TextField
-              label="Wer?"
-              placeholder="  Anzahl der Gäste"
-              value={guests}
-              onChange={(e) => setGuests(e.target.value)}
-            />
+            {/* Reiseziel Input */}
+            <div className="flex flex-col">
+              <label htmlFor="destination" className="mb-2">Wohin?</label>
+              <input
+                type="text"
+                id="destination"
+                name="destination"
+                value={inputData.destination}
+                onChange={handleChange}
+                placeholder="Reiseziel"
+                className="border rounded-lg p-2"
+              />
+            </div>
+
+            {/* Anreise Input */}
+            <div className="flex flex-col">
+              <label htmlFor="arrivalDate" className="mb-2">Anreise</label>
+              <input
+                type="date"
+                id="arrivalDate"
+                name="arrivalDate"
+                value={inputData.arrivalDate}
+                onChange={handleChange}
+                placeholder="Datum"
+                className="border rounded-lg p-2"
+              />
+            </div>
+
+            {/* Abreise Input */}
+            <div className="flex flex-col">
+              <label htmlFor="departureDate" className="mb-2">Abreise</label>
+              <input
+                type="date"
+                id="departureDate"
+                name="departureDate"
+                value={inputData.departureDate}
+                onChange={handleChange}
+                placeholder="Datum"
+                className="border rounded-lg p-2"
+              />
+            </div>
+
+            {/* Gäste Input */}
+            <div className="flex flex-col">
+              <label htmlFor="guests" className="mb-2">Wer?</label>
+              <input
+                type="number"
+                id="guests"
+                name="guests"
+                value={inputData.guests}
+                onChange={handleChange}
+                placeholder="Anzahl der Gäste"
+                className="border rounded-lg p-2"
+              />
+            </div>
+
+            {/* Suchen Button */}
             <button
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" onClick={handleSearch}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              onClick={handleSearch}
             >
               Suchen
             </button>
@@ -89,7 +129,7 @@ export default function Home() {
           </div>
           <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
             <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
+            <h2 className="text-lg font-semibold mt-4">Modernhouse </h2>
           </div>
           {/* Weitere Karten können hinzugefügt werden */}
         </div>

@@ -23,6 +23,7 @@ export default function TextField({ label, placeholder }) {
         className="shadow-md appearance-none border border-pinegreen-light rounded-full w-full py-5 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-pinegreen-light focus:border-transparent transition duration-300"
       />
       {/* Optional: Zeigt den aktuellen Wert des Textfelds */}
+      
       {/*<p className="text-sm text-gray-500 mt-2">Eingabe: {inputValue}</p>*/}
     </div>
   );
