@@ -7,17 +7,17 @@ import Image from "next/image";
 export default function Register() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    strasse: '',
-    hausNr: '',
-    plz: '',
-    ort: '',
-    zahlungsinfo: '',
-    profilbild: '',
-    land: '',
+    First_Name: '',
+    Last_Name: '',
+    Email: '',
+    Password: '',
+    Straße: '',
+    Hausnummer: '',
+    PLZ: '',
+    Ort: '',
+    Zahlungsinformationen: '',
+    Profilbild: '',
+    Land: '',
   });
 
   const [error, setError] = useState('');
