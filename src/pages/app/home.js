@@ -2,15 +2,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import Dropdown from '../../components/Dropdown';
-import TextField from '../../components/TextField';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
+import { getAllHouses } from "../../services/houseService"; // Importiere die getAllHouses-Funktion
 
 export default function Home() {
   // State-Variablen für die Textfelder
   const [showCookieBanner, setShowCookieBanner] = useState(true);
-  
   const [inputData, setInputData] = useState({
     destination: '',
     arrivalDate: '',
@@ -18,18 +16,35 @@ export default function Home() {
     guests: '',
   });
   
+  const [houses, setHouses] = useState([]); // State für die Liste aller Häuser
   const router = useRouter();
 
+  // Handhabt die Änderung der Eingabefelder
   const handleChange = (e) => {
     setInputData({ ...inputData, [e.target.name]: e.target.value });
   };
 
+  // Handhabt die Weiterleitung zur Suchseite
   const handleSearch = () => {
     router.push({
       pathname: '/app/suchliste',
       query: { ...inputData },
     });
   };
+
+  // Ruft alle Häuser aus der Datenbank ab, sobald die Komponente geladen wird
+  useEffect(() => {
+    const fetchHouses = async () => {
+      try {
+        const houseData = await getAllHouses(); // Hole alle Häuser aus der Datenbank
+        setHouses(houseData); // Setze die Häuser im State
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Häuser:", error);
+      }
+    };
+
+    fetchHouses();
+  }, []);
 
   return (
     <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
@@ -44,7 +59,6 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex flex-col items-center gap-8 p-6">
         {/* Search Bar */}
-        
         <div className="w-full max-w-6xl">
           <div className="flex gap-4 border rounded-full bg-white shadow-lg p-6 items-center">
             {/* Reiseziel Input */}
@@ -113,25 +127,32 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Featured Listings 3x3 Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {/* Card Example */}
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Link href="/app/houseHobbit">
-              <Image src="/Images/HobbitPic/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            </Link>  
-            <h2 className="text-lg font-semibold mt-4">Dreamhouse</h2>
-          </div>
-          {/* Weitere Cards */}
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Berghaus.png" width={400} height={300} alt="BergHaus" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">BergHaus</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Modernhouse </h2>
-          </div>
-          {/* Weitere Karten können hinzugefügt werden */}
+        {/* Dynamische Anzeige der Häuser */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-5xl mx-auto">
+          {houses.length > 0 ? (
+            houses.map((house) => (
+              <div key={house.Haus_Id} className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
+                <Link href={`/house/${house.Haus_Id}`}>
+                  <Image
+                    src={house.ImageUrl || "/Images/placeholder.png"} // Platzhalterbild, falls kein Bild vorhanden
+                    width={400}
+                    height={300}
+                    alt={house.Titel}
+                    className="w-full h-48 object-cover rounded-t-xl"
+                  />
+                </Link>  
+                <h2 className="text-lg font-semibold mt-4">{house.Titel}</h2>
+                <p className="text-sm text-gray-600">{house.Beschreibung}</p>
+                <Link href={`/house/${house.Haus_Id}`}>
+                  <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Mehr Details
+                  </button>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p>Häuser werden geladen...</p>
+          )}
         </div>
       </main>
 
@@ -160,3 +181,4 @@ export default function Home() {
     </div>
   );
 }
+

@@ -18,7 +18,7 @@ export default function suchliste() {
   return (
 
     
-    <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
+  <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
       {/* Header */}
       <header className="bg-slate-700 text-white p-4 flex justify-between items-center shadow-md">
         <div className="flex items-center">
@@ -30,8 +30,7 @@ export default function suchliste() {
       </header>
 
       {/* Main Content */}
-      <main className="flex flex-col items-center gap-8 p-6">
-        <p></p>
+    <main className="flex flex-col items-center gap-8 p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-5xl mx-auto">
           <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
             <Link href="/app/houseHobbit">
