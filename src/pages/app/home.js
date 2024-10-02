@@ -1,17 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import TextField from '../../components/TextField';
 import Dropdown from '../../components/Dropdown';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useEffect } from 'react';
 import { supabase } from '../../components/lib/supabaseClient';
 import Cookies from 'js-cookie';
 import { FiLogIn } from 'react-icons/fi';
+import { useRouter } from 'next/router';
+import { getAllHouses } from "../../services/houseService"; // Importiere die getAllHouses-Funktion
 
 export default function Home() {
-  const [destination, setDestination] = useState('');
-  const [arrivalDate, setArrivalDate] = useState('');
-  const [departureDate, setDepartureDate] = useState('');
-  const [guests, setGuests] = useState('');
   const [showCookieBanner, setShowCookieBanner] = useState(true);
   const [user, setUser] = useState(null);
 
@@ -47,7 +44,42 @@ export default function Home() {
     }
   }, []);
 
+  const [inputData, setInputData] = useState({
+    destination: '',
+    arrivalDate: '',
+    departureDate: '',
+    guests: '',
+  });
+  
+  const [houses, setHouses] = useState([]); // State für die Liste aller Häuser
+  const router = useRouter();
+
+  // Handhabt die Änderung der Eingabefelder
+  const handleChange = (e) => {
+    setInputData({ ...inputData, [e.target.name]: e.target.value });
+  };
+
+  // Handhabt die Weiterleitung zur Suchseite
   const handleSearch = () => {
+    router.push({
+      pathname: '/app/suchliste',
+      query: { ...inputData },
+    });
+  };
+
+  // Ruft alle Häuser aus der Datenbank ab, sobald die Komponente geladen wird
+  useEffect(() => {
+    const fetchHouses = async () => {
+      try {
+        const houseData = await getAllHouses(); // Hole alle Häuser aus der Datenbank
+        setHouses(houseData); // Setze die Häuser im State
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Häuser:", error);
+      }
+    };
+
+    fetchHouses();
+  }, []);
     window.location.href = '/app/suchliste';
   };
 
@@ -102,76 +134,59 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center gap-16 py-24 px-10 bg-gradient-to-b from-white to-gray-100">
         {/* Search Bar */}
-        <div className="w-full max-w-4xl bg-white p-4 rounded-full shadow-lg border border-gray-200 flex items-center gap-4">
-          <TextField
-            label=""
-            placeholder="Reiseziel"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            className="flex-grow bg-gray-50 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg text-gray-700 placeholder-gray-500"
-          />
-          <TextField
-            label=""
-            placeholder="Anreise"
-            value={arrivalDate}
-            onChange={(e) => setArrivalDate(e.target.value)}
-            className="flex-grow bg-gray-50 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg text-gray-700 placeholder-gray-500"
-          />
-          <TextField
-            label=""
-            placeholder="Abreise"
-            value={departureDate}
-            onChange={(e) => setDepartureDate(e.target.value)}
-            className="flex-grow bg-gray-50 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg text-gray-700 placeholder-gray-500"
-          />
-          <TextField
-            label=""
-            placeholder="Anzahl der Gäste"
-            value={guests}
-            onChange={(e) => setGuests(e.target.value)}
-            className="flex-grow bg-gray-50 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg text-gray-700 placeholder-gray-500"
-          />
-          <button
-            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full hover:shadow-xl transition duration-300 transform hover:scale-105"
-            onClick={handleSearch}
-          >
-            Suchen
-          </button>
+        <div className="w-full max-w-6xl">
+          <div className="flex gap-4 border rounded-full bg-white shadow-lg p-6 items-center">
+            <TextField
+              label="Wohin?"
+              placeholder="  Reiseziel"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+            />
+            <TextField
+              label="Anreise"
+              placeholder="  Datum"
+              value={arrivalDate}
+              onChange={(e) => setArrivalDate(e.target.value)}
+            />
+            <TextField
+              label="Abreise"
+              placeholder="  Datum"
+              value={departureDate}
+              onChange={(e) => setDepartureDate(e.target.value)}
+            />
+            <TextField
+              label="Wer?"
+              placeholder="  Anzahl der Gäste"
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+            />
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" onClick={handleSearch}
+            >
+              Suchen
+            </button>
+          </div>
         </div>
 
-        {/* Featured Listings - Infinite Horizontal Scroll */}
-        <div className="w-full max-w-6xl py-8 overflow-hidden">
-          <div
-            className="flex gap-8 px-4 py-4 scroll-smooth snap-x snap-mandatory scroll-container"
-            ref={scrollContainerRef}
-            style={{
-              overflowX: 'scroll', // Allow horizontal scrolling
-              scrollbarWidth: 'none', // Hide scrollbar for Firefox
-              msOverflowStyle: 'none', // Hide scrollbar for IE and Edge
-            }}
-          >
-            {houseData.concat(houseData).map((house, index) => (
-              <div
-                key={index}
-                className="group relative overflow-hidden rounded-3xl shadow-lg transform transition duration-700 hover:scale-105 hover:shadow-2xl min-w-[300px] max-w-sm snap-start"
-              >
-                <Link href={`/app/house${house.title.replace(' ', '')}`}>
-                  <Image
-                    src={house.src}
-                    width={400}
-                    height={300}
-                    alt={house.title}
-                    className="w-full h-64 object-cover rounded-3xl"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
-                  <div className="absolute bottom-0 left-0 w-full p-4 text-white opacity-0 group-hover:opacity-100 transition duration-500">
-                    <h2 className="text-xl font-bold">{house.title}</h2>
-                    <p className="text-sm mt-1">{house.description}</p>
-                  </div>
-                </Link>
-              </div>
-            ))}
+        {/* Featured Listings 3x3 Layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {/* Card Example */}
+          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
+            <Link href="/app/houseHobbit">
+              <Image src="/Images/HobbitPic/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
+            </Link>  
+            <h2 className="text-lg font-semibold mt-4">Dreamhouse</h2>
           </div>
+          {/* Weitere Cards */}
+          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
+            <Image src="/Images/Berghaus.png" width={400} height={300} alt="BergHaus" className="w-full h-48 object-cover rounded-t-xl" />
+            <h2 className="text-lg font-semibold mt-4">BergHaus</h2>
+          </div>
+          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
+            <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
+            <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
+          </div>
+          {/* Weitere Karten können hinzugefügt werden */}
         </div>
       </main>
 
@@ -201,3 +216,4 @@ export default function Home() {
     </div>
   );
 }
+

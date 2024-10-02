@@ -1,16 +1,24 @@
 import Link from "next/link";
 import Image from "next/image";
 import Dropdown from '../../components/Dropdown';
-import TextField from '../../components/TextField';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
-export default function UserList({destination, arrivalDate, departureDate, guests}) {
- 
 
+
+export default function suchliste() {
+  const router = useRouter(); 
+  const {query} = useRouter();
+
+  useEffect(() => {
+    console.log('Query-Parameter:', query); // Debugging: Zeigt die übergebenen Parameter in der Konsole an
+  }, [query]);
+  
 
   return (
+
     
-    <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
+  <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
       {/* Header */}
       <header className="bg-slate-700 text-white p-4 flex justify-between items-center shadow-md">
         <div className="flex items-center">
@@ -22,8 +30,7 @@ export default function UserList({destination, arrivalDate, departureDate, guest
       </header>
 
       {/* Main Content */}
-      <main className="flex flex-col items-center gap-8 p-6">
-        <p></p>
+    <main className="flex flex-col items-center gap-8 p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-5xl mx-auto">
           <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
             <Link href="/app/houseHobbit">
@@ -64,7 +71,18 @@ export default function UserList({destination, arrivalDate, departureDate, guest
             <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
           </div>
         </div>
+          <div style={{ padding: '20px' }}>
+            <h1>Ergebnisseite</h1>
+            <ul>
+            <li><strong>Reiseziel:</strong> {query.destination || '(empty)'}</li>
+            <li><strong>Anreise:</strong> {query.arrivalDate || '(empty)'}</li>
+            <li><strong>Abreise:</strong> {query.departureDate || '(empty)'}</li>
+            <li><strong>Anzahl der Gäste:</strong> {query.guests || '(empty)'}</li>
+            </ul>
+          </div>
       </main>
+      
+      
 
       {/* Footer with Links */}
       <footer className="bg-black text-white p-4">
