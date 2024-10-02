@@ -1,86 +1,46 @@
-import { useState } from 'react'
-import { useRouter } from 'next/router'
-import { supabase } from '../../components/lib/supabaseClient'
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { supabase } from '../../components/lib/supabaseClient';
+import Cookies from 'js-cookie';
 
 export default function Login() {
-  const router = useRouter(); 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('') // Um Fehler anzuzeigen
-  const [successMessage, setSuccessMessage] = useState('') // Erfolgsmeldung für Passwort-Zurücksetzen
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    setErrorMessage('');
 
-    setErrorMessage('') // Fehler zurücksetzen
-    setSuccessMessage('') // Erfolgsmeldung zurücksetzen
-
-    const { user, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    })
+    });
 
     if (error) {
-      // Fehlerbehandlung basierend auf Supabase-Fehlermeldungen
-      if (error.message.toLowerCase().includes('invalid login credentials')) {
-        setErrorMessage('Falsche E-Mail oder falsches Passwort.')
-      } else if (error.message.toLowerCase().includes('user not found')) {
-        setErrorMessage('Diese E-Mail-Adresse ist nicht registriert.')
-      } else if (error.message.toLowerCase().includes('email not confirmed')) {
-        setErrorMessage('Bitte bestätige zuerst deine E-Mail-Adresse.')
-      } else {
-        setErrorMessage('Anmeldefehler. Bitte überprüfe deine Eingaben und versuche es erneut.')
-      }
-      console.log('Fehler beim Anmelden:', error.message)
-      return
+      setErrorMessage('Anmeldefehler. Bitte überprüfe deine Eingaben.');
+    } else {
+      // Speichern des Tokens in einem Cookie für 7 Tage
+      Cookies.set('sb-access-token', data.session.access_token, { expires: 7 });
+      Cookies.set('sb-refresh-token', data.session.refresh_token, { expires: 7 });
+
+      // Weiterleitung nach erfolgreichem Login
+      router.push('/app/home');
     }
-
-    console.log('Erfolgreich angemeldet:', user)
-    // Weiterleitung zu /app/home nach erfolgreicher Anmeldung
-    router.push('/app/home')
-  }
-
-  const handlePasswordReset = async () => {
-    setErrorMessage('') // Fehler zurücksetzen
-    setSuccessMessage('') // Erfolgsmeldung zurücksetzen
-
-    if (!email) {
-      setErrorMessage('Bitte gib eine gültige E-Mail-Adresse ein.')
-      return
-    }
-
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email)
-
-    if (error) {
-      if (error.message.toLowerCase().includes('invalid email')) {
-        setErrorMessage('Bitte gib eine gültige E-Mail-Adresse ein.')
-      } else {
-        setErrorMessage('Fehler beim Senden der Zurücksetzungs-E-Mail. Bitte versuche es später erneut.')
-      }
-      console.log('Fehler beim Zurücksetzen des Passworts:', error.message)
-      return
-    }
-
-    setSuccessMessage('Eine E-Mail zum Zurücksetzen des Passworts wurde gesendet. Bitte überprüfe dein Postfach.')
-    console.log('Passwort-Zurücksetzungs-E-Mail gesendet:', data)
-  }
+  };
 
   return (
-    <div className="h-screen bg-fixed bg-[url('/Images/Backgroundlogin.png')] bg-cover bg-center flex items-center justify-center">
-      <div className="relative z-10 p-8 rounded-lg shadow-lg max-w-md w-full">
+<div className="relative h-screen bg-fixed bg-[url('/Images/Haus_am_See.jpg')] bg-cover bg-center flex items-center justify-center">
+  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
+  {/* Your other content goes here */}
+      <div className="relative z-10 p-8 rounded-lg shadow-lg max-w-md w-full bg-white">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-700">Anmelden</h2>
-        
-        {/* Fehleranzeige */}
+
         {errorMessage && (
           <p className="text-red-500 text-center mb-4">{errorMessage}</p>
         )}
-        
-        {/* Erfolgsmeldung für Passwort-Zurücksetzen */}
-        {successMessage && (
-          <p className="text-green-500 text-center mb-4">{successMessage}</p>
-        )}
 
-        {/* Login Formular */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <input
@@ -107,17 +67,7 @@ export default function Login() {
             Anmelden
           </button>
         </form>
-
-        {/* Passwort-Zurücksetzen-Link */}
-        <div className="text-center mt-4">
-          <button
-            onClick={handlePasswordReset}
-            className="text-blue-500 hover:underline focus:outline-none"
-          >
-            Passwort vergessen? Hier zurücksetzen
-          </button>
-        </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,152 +1,126 @@
 import { useState, useEffect, useRef } from 'react';
+import { FiMoreVertical } from 'react-icons/fi';
 
 export default function Dropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
+  const firstMenuItemRef = useRef(null);
 
-  // Function to open the dropdown on hover
-  const handleMouseEnter = () => {
-    setIsOpen(true);
+  // Toggle dropdown open/close
+  const toggleDropdown = () => {
+    setIsOpen((prev) => !prev);
   };
 
-  // Function to close the dropdown when leaving the dropdown area
-  const handleMouseLeave = () => {
+  // Close dropdown
+  const closeDropdown = () => {
     setIsOpen(false);
   };
 
-  // Close dropdown when clicking outside of it
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        closeDropdown();
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropdownRef]);
+  }, []);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (isOpen) {
+        switch (event.key) {
+          case 'Escape':
+            closeDropdown();
+            buttonRef.current.focus();
+            break;
+          case 'ArrowDown':
+            event.preventDefault();
+            firstMenuItemRef.current?.focus();
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
+
+  // Handle focus trap within dropdown
+  const handleMenuKeyDown = (event, currentIndex, totalItems) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      const nextIndex = (currentIndex + 1) % totalItems;
+      document.getElementById(`menu-item-${nextIndex}`)?.focus();
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      const prevIndex = (currentIndex - 1 + totalItems) % totalItems;
+      document.getElementById(`menu-item-${prevIndex}`)?.focus();
+    } else if (event.key === 'Tab') {
+      closeDropdown();
+    }
+  };
+
+  const menuItems = [
+    { href: '/app/login', label: 'Anmelden' },
+    { href: '/app/register', label: 'Registrieren' },
+    { href: '#', label: 'Hilfe' },
+  ];
 
   return (
-    <div 
-      className="relative inline-block text-left" 
-      ref={dropdownRef}
-      onMouseEnter={handleMouseEnter} // Open on hover
-      onMouseLeave={handleMouseLeave} // Close when mouse leaves
-    >
+    <div className="relative inline-block text-left">
       <button
-        className="inline-flex justify-center w-32 px-4 py-2 text-lg font-semibold text-white bg-green-600 rounded-md hover:bg-green-500 focus:outline-none"
+        ref={buttonRef}
+        onClick={toggleDropdown}
+        className="inline-flex items-center justify-center w-10 h-10 text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+        aria-haspopup="true"
+        aria-expanded={isOpen}
       >
-        Menü
-        <svg
-          className="ml-2 h-5 w-5"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 111.414 1.414l-4 4a1 1 01-1.414 0l-4-4a1 1 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
+        <FiMoreVertical size={24} aria-hidden="true" />
       </button>
 
       {isOpen && (
-        <div className="origin-top-right absolute right-0 mt-2 w-40 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-          <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-            <a
-              href="/app/login"
-              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              role="menuitem"
-            >
-              Anmelden
-            </a>
-            <a
-              href="/app/register"
-              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              role="menuitem"
-            >
-              Registrieren
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              role="menuitem"
-            >
-              Hilfe
-            </a>
+        <div
+          ref={dropdownRef}
+          className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 origin-top-right transform opacity-0 scale-95 animate-dropdown"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="menu-button"
+        >
+          <div className="py-1">
+            {menuItems.map((item, index) => (
+              <a
+                key={index}
+                href={item.href}
+                id={`menu-item-${index}`}
+                ref={index === 0 ? firstMenuItemRef : null}
+                className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                role="menuitem"
+                tabIndex="0"
+                onKeyDown={(e) => handleMenuKeyDown(e, index, menuItems.length)}
+                onClick={closeDropdown}
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
         </div>
       )}
     </div>
   );
 }
-
-
-/*import { useState } from 'react';
-
-export default function Dropdown() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <div className="relative inline-block text-left">
-      <div className="absolute top-4 right-4">
-        <button
-          onClick={toggleDropdown}
-          className="inline-flex justify-center w-32 px-4 py-2 text-lg font-semibold text-white bg-green-600 rounded-md hover:bg-green-500 focus:outline-none"
-        >
-          Menü
-          <svg
-            className="ml-2 h-5 w-5"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-
-      {isOpen && (
-        <div className="origin-top-right absolute right-4 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-          <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-            <a
-              href="/app/login"
-              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              role="menuitem"
-            >
-              Anmelden
-            </a>
-            <a
-              href="/app/register"
-              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              role="menuitem"
-            >
-              Registrieren
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              role="menuitem"
-            >
-              Hilfe
-            </a>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}*/
