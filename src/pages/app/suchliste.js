@@ -1,24 +1,32 @@
-import Link from "next/link";
-import Image from "next/image";
+import Link from 'next/link';
+import Image from 'next/image';
 import Dropdown from '../../components/Dropdown';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { getAllHouses } from '../../services/houseService';
 
+export default function Suchliste() {
+  const router = useRouter();
+  const { query } = router;
+  const [houses, setHouses] = useState([]);
 
-
-export default function suchliste() {
-  const router = useRouter(); 
-  const {query} = useRouter();
-
+  // Häuserdaten aus der Datenbank abrufen und im State speichern
   useEffect(() => {
-    console.log('Query-Parameter:', query); // Debugging: Zeigt die übergebenen Parameter in der Konsole an
-  }, [query]);
-  
+    const fetchHouses = async () => {
+      try {
+        const houseData = await getAllHouses(); // Abruf der Daten aus der Datenbank
+        setHouses(houseData); // Speichern der abgerufenen Daten im State
+        console.log('House data:', houseData);
+      } catch (error) {
+        console.error('Fehler beim Abrufen der Häuserdaten:', error);
+      }
+    };
+
+    fetchHouses();
+  }, []);
 
   return (
-
-    
-  <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
+    <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
       {/* Header */}
       <header className="bg-slate-700 text-white p-4 flex justify-between items-center shadow-md">
         <div className="flex items-center">
@@ -30,71 +38,50 @@ export default function suchliste() {
       </header>
 
       {/* Main Content */}
-    <main className="flex flex-col items-center gap-8 p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Link href="/app/houseHobbit">
-            <Image src="/Images/HobbitPic/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            </Link>  
-            <h2 className="text-lg font-semibold mt-4">Dreamhouse</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Berghaus.png" width={400} height={300} alt="BergHaus" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">BergHaus</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Dreamhouse</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Berghaus.png" width={400} height={300} alt="BergHaus" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">BergHaus</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Hobbit.png" width={400} height={300} alt="Dreamhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Dreamhouse</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Berghaus.png" width={400} height={300} alt="BergHaus" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">BergHaus</h2>
-          </div>
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-            <Image src="/Images/Modernhouse.png" width={400} height={300} alt="Modernhouse" className="w-full h-48 object-cover rounded-t-xl" />
-            <h2 className="text-lg font-semibold mt-4">Modernhouse</h2>
-          </div>
+      <main className="flex flex-col items-center gap-8 p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {/* Dynamische Anzeige aller Häuser aus der Datenbank */}
+          {houses.length > 0 ? (
+            houses.map((house) => (
+              <div key={house.Haus_Id} className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
+                <Link href={`/app/houseHobbit?id=${house.Haus_Id}`} legacyBehavior>
+                  <img
+                    src={house.Bild_3} // Bild-URL aus den Daten
+                    width={400}
+                    height={300}
+                    alt={house.Titel}
+                    className="w-full h-48 object-cover rounded-t-xl"
+                  />
+                </Link>
+                <h2 className="text-lg font-semibold mt-4">{house.Titel}</h2>
+              </div>
+            ))
+          ) : (
+            <p>Keine Häuser verfügbar.</p> // Falls keine Häuser in der Datenbank sind, wird dieser Text angezeigt
+          )}
         </div>
-          <div style={{ padding: '20px' }}>
-            <h1>Ergebnisseite</h1>
-            <ul>
+
+        {/* Zusätzliche Informationen basierend auf den Query-Parametern */}
+        <div style={{ padding: '20px' }}>
+          <h1>Ergebnisseite</h1>
+          <ul>
             <li><strong>Reiseziel:</strong> {query.destination || '(empty)'}</li>
             <li><strong>Anreise:</strong> {query.arrivalDate || '(empty)'}</li>
             <li><strong>Abreise:</strong> {query.departureDate || '(empty)'}</li>
             <li><strong>Anzahl der Gäste:</strong> {query.guests || '(empty)'}</li>
-            </ul>
-          </div>
+          </ul>
+        </div>
       </main>
-      
-      
 
-      {/* Footer with Links */}
+      {/* Footer mit Links */}
       <footer className="bg-black text-white p-4">
         <nav className="space-x-4 text-center">
-          <Link href="/about" className="hover:underline">Über uns</Link>
-          <Link href="/contact" className="hover:underline">Kontakt</Link>
-          <Link href="/app/impressum" className="hover:underline">Impressum</Link>
-          <Link href="/privacy" className="hover:underline">Datenschutz</Link>
+          <Link href="/about" legacyBehavior><a className="hover:underline">Über uns</a></Link>
+          <Link href="/contact" legacyBehavior><a className="hover:underline">Kontakt</a></Link>
+          <Link href="/app/impressum" legacyBehavior><a className="hover:underline">Impressum</a></Link>
+          <Link href="/privacy" legacyBehavior><a className="hover:underline">Datenschutz</a></Link>
         </nav>
       </footer>
-
     </div>
-   
   );
 }

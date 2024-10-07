@@ -1,30 +1,41 @@
-import Link from "next/link";
-import Image from "next/image";
+import Link from 'next/link';
+import Image from 'next/image';
 import Dropdown from '../../components/Dropdown';
 import { useState, useEffect } from 'react';
-import BookingCard from "../../components/BookingCard";
-import ListingInfo from "../../components/ListingInfos";
-import { getAllHouses } from "../../services/houseService";
+import BookingCard from '../../components/BookingCard';
+import ListingInfo from '../../components/ListingInfos';
+import { getAllHouses } from '../../services/houseService';
+import { useRouter } from 'next/router';
 
 export default function Unterkunft() {
   const [showCookieBanner, setShowCookieBanner] = useState(true);
   const [house, setHouse] = useState(null);
-  const houseId = 2; // Hier kannst du die ID des Hauses manuell setzen
-  const Beschreibung = house ? house.Beschreibung : 0; ;
+  const router = useRouter();
+  const { query } = router;
+  
+  // `houseId` wird aus den Query-Parametern abgerufen
+  const houseId = query.id;
+
+  const Beschreibung = house ? house.Beschreibung : '';
+  const Bild_3 = house ? house.Bild_3 : '';
+  const Titel = house ? house.Titel : '';
 
   useEffect(() => {
-    const fetchHouse = async () => {
-      const houseData = await getAllHouses();
-      console.log("House data", houseData);
-      const selectedHouse = houseData.find(h => h.Haus_Id === houseId); // Finde das Haus basierend auf der ID
-      setHouse(selectedHouse);
-      console.log("Haus: " + selectedHouse);
-    };
+    // Nur abrufen, wenn die `houseId` vorhanden ist
+    if (houseId) {
+      const fetchHouse = async () => {
+        const houseData = await getAllHouses();
+        console.log("House data", houseData);
 
-    fetchHouse();
-    }, []);
+        // Finde das Haus basierend auf der `houseId`
+        const selectedHouse = houseData.find((h) => h.Haus_Id === parseInt(houseId));
+        setHouse(selectedHouse);
+        console.log("Haus: ", selectedHouse);
+      };
 
-
+      fetchHouse();
+    }
+  }, [houseId]); // `useEffect` wird erneut ausgeführt, wenn `houseId` geändert wird
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -38,21 +49,27 @@ export default function Unterkunft() {
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center gap-4 p-2 bg-gray-100">
-      <div className="text-4xl text-inherit">
-          {house ? (<h1>{house.Titel}</h1>  ) : (<p>Haus wird geladen...</p>  )}
+        {/* Haus Titel */}
+        <div className="text-4xl text-inherit">
+          {house ? (
+            <h1>{house.Titel}</h1>
+          ) : (
+            <p>Haus wird geladen...</p>
+          )}
         </div>
+
         {/* Responsives 3x3 Grid Layout */}
         <div className="grid grid-cols-4 grid-rows-[2fr_1fr] gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
-          {/* Erstes Bild (nimmt 2 Spalten und 2 Reihen ein) */}
+          {/* Erstes Bild (nimmt 2 Spalten und 1 Reihe ein) */}
           <div className="col-span-2 row-span-1">
-            <Image
-              src="/Images/HobbitPic/Hobbit.png"
-              layout="responsive"
-              width={500}  // Relative Bildgröße
-              height={500}  // Relative Bildgröße
-              alt="Dreamhouse"
-              className="w-full object-cover rounded-xl"
-            />
+                <img
+                  src={Bild_3} // Bild-URL aus den Daten
+                  layout="responsive"
+                  width={500}
+                  height={500}
+                  alt={Titel}
+                  className="w-full h-full object-cover rounded-lg"
+                />
           </div>
 
           {/* Zweites Bild */}
@@ -70,7 +87,7 @@ export default function Unterkunft() {
           {/* Text */}
           <div className="col-span-1 row-span-1">
             <h1 className="text-lg font-bold">Dreamhouse</h1>
-            <span className="text-base"> {`${Beschreibung}`} </span>
+            <span className="text-base">{`${Beschreibung}`}</span>
           </div>
 
           {/* Drittes Bild */}
@@ -101,10 +118,10 @@ export default function Unterkunft() {
         {/* Buchung und weitere Informationen */}
         <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[500vh] ">
           <div className="w-full ">
-            <ListingInfo house={house}/>
+            <ListingInfo house={house} />
           </div>
           <div className="w-full  ">
-            <BookingCard house={house}/>
+            <BookingCard house={house} />
           </div>
         </div>
 

@@ -10,7 +10,7 @@ export default function Home() {
     // Weiterleitung nach 4 Sekunden zu /app/home
     const timer = setTimeout(() => {
       router.push("/app/home");
-    }, 4000);
+    }, 6000);
 
     return () => clearTimeout(timer);
   }, [router]);
