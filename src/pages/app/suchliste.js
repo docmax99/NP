@@ -43,8 +43,8 @@ export default function Suchliste() {
           {/* Dynamische Anzeige aller Häuser aus der Datenbank */}
           {houses.length > 0 ? (
             houses.map((house) => (
-              <div key={house.Haus_Id} className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-                <Link href={`/app/houseHobbit?id=${house.Haus_Id}`} legacyBehavior>
+              <div key={house.id} className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
+                <Link href={`/app/houseHobbit?id=${house.id}`} legacyBehavior>
                   <img
                     src={house.Bild_3} // Bild-URL aus den Daten
                     width={400}

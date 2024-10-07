@@ -57,6 +57,7 @@ const SearchBar = ({ inputData, handleChange, handleSearch }) => (
   </div>
 );
 
+
 const FeaturedListings = ({ houses, scrollContainerRef }) => (
   <div className="w-full max-w-6xl py-8 overflow-hidden">
     <div
@@ -68,24 +69,30 @@ const FeaturedListings = ({ houses, scrollContainerRef }) => (
         msOverflowStyle: 'none',
       }}
     >
-      {houses.map((house, index) => (
-        <div
-          key={index}
-          className="group relative overflow-hidden rounded-3xl shadow-lg transform transition duration-700 hover:scale-105 hover:shadow-2xl min-w-[300px] max-w-sm snap-start"
-        >
-          <Link href={`/app/house/${house.id}`}>
-            <Image
-              src={house.imageUrl}
-              width={400}
-              height={300}
-              alt={house.title}
-              className="w-full h-64 object-cover rounded-3xl"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
-            <div className="absolute bottom-0 left-0 w-full p-4 text-white opacity-0 group-hover:opacity-100 transition duration-500">
-              <h2 className="text-xl font-bold">{house.title}</h2>
-              <p className="text-sm mt-1">{house.description}</p>
-            </div>
+      {houses.map((house) => (
+        <div key={house.id}className="group relative overflow-hidden rounded-3xl shadow-lg transform transition duration-700 hover:scale-105 hover:shadow-2xl min-w-[300px] max-w-sm snap-start">
+          <Link href={`/app/houseHobbit?id=${house.id}`} legacyBehavior>
+            <a>
+              <div className="relative">
+                {/* Bild des Hauses */}
+                <img
+                  src={house.Bild_3}
+                  width={400}
+                  height={300}
+                  alt={house.Title}
+                  className="w-full h-64 object-cover rounded-3xl"
+                />
+
+                {/* Overlay-Effekt */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
+
+                {/* Textinformation */}
+                <div className="absolute bottom-0 left-0 w-full p-4 text-white opacity-0 group-hover:opacity-100 transition duration-500">
+                  <h2 className="text-xl font-bold">{house.Title}</h2>
+                  <p className="text-sm mt-1">{house.Beschreibung}</p>
+                </div>
+              </div>
+            </a>
           </Link>
         </div>
       ))}
@@ -125,6 +132,7 @@ export default function Home() {
   const [houses, setHouses] = useState([]);
   const scrollContainerRef = useRef(null);
   const router = useRouter();
+  const { query } = router;
 
   const [inputData, setInputData] = useState({
     destination: '',

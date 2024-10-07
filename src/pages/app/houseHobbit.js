@@ -28,7 +28,7 @@ export default function Unterkunft() {
         console.log("House data", houseData);
 
         // Finde das Haus basierend auf der `houseId`
-        const selectedHouse = houseData.find((h) => h.Haus_Id === parseInt(houseId));
+        const selectedHouse = houseData.find((h) => h.id === parseInt(houseId));
         setHouse(selectedHouse);
         console.log("Haus: ", selectedHouse);
       };
