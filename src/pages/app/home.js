@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import { supabase } from '../../components/lib/supabaseClient';
-import Cookies from 'js-cookie';
 import { FiLogIn } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { getAllHouses } from "../../services/houseService";
