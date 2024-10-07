@@ -4,8 +4,12 @@ import { supabase } from '../../components/lib/supabaseClient';
 import { FiLogIn } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { getAllHouses } from "../../services/houseService";
+import Link from 'next/link';
+import Dropdown from '../../components/Dropdown'; // Import Dropdown component
+import Image from 'next/image';
 
-const Header = ({ user, onAvatarClick }) => (
+
+const Header = ({ user, onAvatarClick, onLogout }) => ( // Add onLogout prop
   <header className="bg-white text-gray-800 p-6 flex justify-between items-center border-b border-gray-200 sticky top-0 z-50 shadow-md">
     <div className="flex items-center space-x-4">
       <Image src="/Images/LogoNicePlaces.png" width={50} height={50} alt="Logo" />
