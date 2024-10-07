@@ -1,7 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
-import Dropdown from '../../components/Dropdown';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 import { supabase } from '../../components/lib/supabaseClient';
 import Cookies from 'js-cookie';
 import { FiLogIn } from 'react-icons/fi';
@@ -57,7 +56,6 @@ const SearchBar = ({ inputData, handleChange, handleSearch }) => (
   </div>
 );
 
-
 const FeaturedListings = ({ houses, scrollContainerRef }) => (
   <div className="w-full max-w-6xl py-8 overflow-hidden">
     <div
@@ -69,30 +67,24 @@ const FeaturedListings = ({ houses, scrollContainerRef }) => (
         msOverflowStyle: 'none',
       }}
     >
-      {houses.map((house) => (
-        <div key={house.id}className="group relative overflow-hidden rounded-3xl shadow-lg transform transition duration-700 hover:scale-105 hover:shadow-2xl min-w-[300px] max-w-sm snap-start">
-          <Link href={`/app/houseHobbit?id=${house.id}`} legacyBehavior>
-            <a>
-              <div className="relative">
-                {/* Bild des Hauses */}
-                <img
-                  src={house.Bild_3}
-                  width={400}
-                  height={300}
-                  alt={house.Title}
-                  className="w-full h-64 object-cover rounded-3xl"
-                />
-
-                {/* Overlay-Effekt */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
-
-                {/* Textinformation */}
-                <div className="absolute bottom-0 left-0 w-full p-4 text-white opacity-0 group-hover:opacity-100 transition duration-500">
-                  <h2 className="text-xl font-bold">{house.Title}</h2>
-                  <p className="text-sm mt-1">{house.Beschreibung}</p>
-                </div>
-              </div>
-            </a>
+      {houses.map((house, index) => (
+        <div
+          key={index}
+          className="group relative overflow-hidden rounded-3xl shadow-lg transform transition duration-700 hover:scale-105 hover:shadow-2xl min-w-[300px] max-w-sm snap-start"
+        >
+          <Link href={`/app/house/${house.id}`}>
+            <Image
+              src={house.imageUrl}
+              width={400}
+              height={300}
+              alt={house.title}
+              className="w-full h-64 object-cover rounded-3xl"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
+            <div className="absolute bottom-0 left-0 w-full p-4 text-white opacity-0 group-hover:opacity-100 transition duration-500">
+              <h2 className="text-xl font-bold">{house.title}</h2>
+              <p className="text-sm mt-1">{house.description}</p>
+            </div>
           </Link>
         </div>
       ))}
@@ -211,7 +203,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <Header user={user} onAvatarClick={() => router.push('/app/login')} />
+      <Header user={user} onAvatarClick={() => router.push('/app/login')} onLogout={() => supabase.auth.signOut()} />
       <main className="flex-grow flex flex-col items-center gap-16 py-24 px-10 bg-gradient-to-b from-white to-gray-50">
         <SearchBar inputData={inputData} handleChange={handleChange} handleSearch={handleSearch} />
         <FeaturedListings houses={houses} scrollContainerRef={scrollContainerRef} />

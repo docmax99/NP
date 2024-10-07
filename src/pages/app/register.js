@@ -14,9 +14,10 @@ export default function Register() {
     Hausnummer: '',
     PLZ: '',
     Ort: '',
-    Land: '',
+    Land: 'DE', // Standardwert auf 'DE' gesetzt
   });
-  const [profileImagePath, setProfileImagePath] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
@@ -26,12 +27,23 @@ export default function Register() {
     });
   };
 
+  const handleImageUpload = (file) => {
+    setProfileImage(file);
+
+    // Vorschau des Bildes setzen
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfileImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
     // Überprüfen, ob alle erforderlichen Felder ausgefüllt sind
     const requiredFields = ['First_Name', 'Last_Name', 'Email', 'Password'];
-    const allFieldsFilled = requiredFields.every(field => formData[field].trim() !== '');
+    const allFieldsFilled = requiredFields.every((field) => formData[field].trim() !== '');
 
     if (!allFieldsFilled) {
       setError('Bitte füllen Sie alle Pflichtfelder aus.');
@@ -40,7 +52,7 @@ export default function Register() {
 
     try {
       // Benutzerregistrierung bei Supabase
-      const { user, error: authError } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.Email,
         password: formData.Password,
       });
@@ -51,15 +63,33 @@ export default function Register() {
         return;
       }
 
-      // Verwende ein Standardprofilbild, wenn kein Bild hochgeladen wurde
-      const defaultProfileImage = 'default-avatar-url'; // URL zum Standardbild
-      const finalProfileImagePath = profileImagePath || defaultProfileImage;
+      const user = authData.user;
+
+      // Profilbild hochladen, falls vorhanden
+      let finalProfileImagePath = 'default-avatar-url'; // Standardbild-URL
+      if (profileImage) {
+        const fileName = `${user.id}Profilepic`;
+        const { data: imageData, error: uploadError } = await supabase.storage
+          .from('Users')
+          .upload(`${fileName}`, profileImage);
+
+        if (uploadError) {
+          console.log('Fehler beim Hochladen des Profilbildes:', uploadError.message);
+          setError(uploadError.message);
+          return;
+        }
+
+        // URL des hochgeladenen Bildes abrufen
+        const { data: publicUrlData } = supabase.storage.from('Users').getPublicUrl(fileName);
+        finalProfileImagePath = publicUrlData.publicUrl;
+      }
 
       // Benutzerinformationen in die Datenbanktabelle einfügen
       const { data, error: insertError } = await supabase
         .from('User')
         .insert([
           {
+            id: user.id,
             First_Name: formData.First_Name,
             Last_Name: formData.Last_Name,
             Email: formData.Email,
@@ -89,9 +119,8 @@ export default function Register() {
   };
 
   return (
-<div className="relative h-screen bg-fixed bg-[url('/Images/Haus_am_See.jpg')] bg-cover bg-center flex items-center justify-center">
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
-  {/* Your other content goes here */}
+    <div className="relative h-screen bg-fixed bg-[url('/Images/Haus_am_See.jpg')] bg-cover bg-center flex items-center justify-center">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
       <div className="bg-slate-50 p-8 rounded-3xl shadow-2xl max-w-lg w-full relative z-10">
         <h2 className="text-2xl font-bold mb-6 text-center">Registrieren</h2>
         <form onSubmit={handleRegister} className="space-y-4">
@@ -149,21 +178,38 @@ export default function Register() {
             placeholder="Ort"
             onChange={handleChange}
           />
-          <input
+          <select
             className="w-full p-2 border border-gray-300 rounded"
             name="Land"
-            placeholder="Land"
+            value={formData.Land}
             onChange={handleChange}
-          />
-
-          <ImageUpload onUpload={(path) => setProfileImagePath(path)} />
-
-          {error && <p className="text-red-500">{error}</p>} {/* Fehleranzeige */}
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300"
           >
+            <option value="DE">🇩🇪 Deutschland</option>
+            <option value="AT">🇦🇹 Österreich</option>
+            <option value="CH">🇨🇭 Schweiz</option>
+          </select>
+
+          <div className="border-dashed border-2 border-gray-300 p-4 rounded relative">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e.target.files[0])}
+              className="cursor-pointer absolute inset-0 opacity-0 w-full h-full"
+            />
+            {profileImagePreview ? (
+              <img
+                src={profileImagePreview}
+                alt="Profilbild Vorschau"
+                className="w-full h-full object-cover rounded"
+              />
+            ) : (
+              <p className="text-center text-gray-400">Klick hier oder ziehe ein Bild hinein</p>
+            )}
+          </div>
+
+          {error && <p className="text-red-500">{error}</p>}
+
+          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300">
             Registrieren
           </button>
         </form>
