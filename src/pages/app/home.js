@@ -8,7 +8,6 @@ import Link from 'next/link';
 import Dropdown from '../../components/Dropdown'; // Import Dropdown component
 import Image from 'next/image';
 
-
 const Header = ({ user, onAvatarClick, onLogout }) => ( // Add onLogout prop
   <header className="bg-white text-gray-800 p-6 flex justify-between items-center border-b border-gray-200 sticky top-0 z-50 shadow-md">
     <div className="flex items-center space-x-4">
@@ -25,7 +24,7 @@ const Header = ({ user, onAvatarClick, onLogout }) => ( // Add onLogout prop
           onClick={onAvatarClick}
         />
       ) : (
-        <Link href="/app/login">
+        <Link href="/app/login" passHref>
           <FiLogIn size={28} className="text-gray-800 hover:text-blue-600 transition duration-300 cursor-pointer" />
         </Link>
       )}
@@ -42,7 +41,7 @@ const SearchBar = ({ inputData, handleChange, handleSearch }) => (
           key={index}
           type={field.includes('Date') ? 'date' : field === 'guests' ? 'number' : 'text'}
           name={field}
-          placeholder={`  ${field.charAt(0).toUpperCase() + field.slice(1)}`}
+          placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
           value={inputData[field]}
           onChange={handleChange}
           className="flex-grow bg-gray-50 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg text-gray-700 placeholder-gray-500"
@@ -74,9 +73,9 @@ const FeaturedListings = ({ houses, scrollContainerRef }) => (
           key={index}
           className="group relative overflow-hidden rounded-3xl shadow-lg transform transition duration-700 hover:scale-105 hover:shadow-2xl min-w-[300px] max-w-sm snap-start"
         >
-          <Link href={`/app/house/${house.id}`}>
+          <Link href={`/app/house/${house.id}`} passHref>
             <Image
-              src={house.imageUrl}
+              src={house.Bild1}
               width={400}
               height={300}
               alt={house.title}
@@ -97,10 +96,18 @@ const FeaturedListings = ({ houses, scrollContainerRef }) => (
 const Footer = () => (
   <footer className="bg-white text-gray-800 p-8 mt-16 shadow-inner">
     <nav className="space-x-8 text-center text-lg">
-      <Link href="/about" className="hover:text-blue-600 transition duration-300">About Us</Link>
-      <Link href="/contact" className="hover:text-blue-600 transition duration-300">Contact</Link>
-      <Link href="/app/impressum" className="hover:text-blue-600 transition duration-300">Impressum</Link>
-      <Link href="/privacy" className="hover:text-blue-600 transition duration-300">Privacy</Link>
+      <Link href="/about" passHref>
+        About Us
+      </Link>
+      <Link href="/contact" passHref>
+        Contact
+      </Link>
+      <Link href="/app/impressum" passHref>
+        Impressum
+      </Link>
+      <Link href="/privacy" passHref>
+        Privacy
+      </Link>
     </nav>
     <p className="text-center text-gray-500 mt-6 text-sm">&copy; 2024 Nice Places. All rights reserved.</p>
   </footer>

@@ -2,9 +2,17 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['media.licdn.com', 'evapvrkechtafxfpkvn.supabase.co'], // Verwende die 'domains'-Konfiguration
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'media.licdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'evapvrkechtafxfpkvn.supabase.co',
+      },
+    ],
   },
 };
 
 export default nextConfig;
-
