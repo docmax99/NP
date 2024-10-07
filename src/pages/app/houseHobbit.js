@@ -12,25 +12,30 @@ export default function Unterkunft() {
   const [house, setHouse] = useState(null);
   const router = useRouter();
   const { query } = router;
-  
+
   // `houseId` wird aus den Query-Parametern abgerufen
   const houseId = query.id;
 
-  const Beschreibung = house ? house.Beschreibung : '';
-  const Bild_3 = house ? house.Bild_3 : '';
-  const Titel = house ? house.Titel : '';
+  // Fallback-Werte für Titel und Bild
+  const Beschreibung = house ? house.Beschreibung : 'Beschreibung nicht verfügbar.';
+  const Bild_3 = house ? house.Bild_3 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild
+  const Titel = house ? house.Titel || 'Unbekanntes Haus' : 'Unbekanntes Haus'; // Fallback-Titel
 
   useEffect(() => {
     // Nur abrufen, wenn die `houseId` vorhanden ist
     if (houseId) {
       const fetchHouse = async () => {
-        const houseData = await getAllHouses();
-        console.log("House data", houseData);
+        try {
+          const houseData = await getAllHouses();
+          console.log("Abgerufene Hausdaten:", houseData);
 
-        // Finde das Haus basierend auf der `houseId`
-        const selectedHouse = houseData.find((h) => h.id === parseInt(houseId));
-        setHouse(selectedHouse);
-        console.log("Haus: ", selectedHouse);
+          // Finde das Haus basierend auf der `houseId` (UUID wird als String verglichen)
+          const selectedHouse = houseData.find((h) => h.id === houseId);
+          setHouse(selectedHouse);
+          console.log("Ausgewähltes Haus:", selectedHouse);
+        } catch (error) {
+          console.error("Fehler beim Abrufen des Hauses:", error);
+        }
       };
 
       fetchHouse();
@@ -62,17 +67,17 @@ export default function Unterkunft() {
         <div className="grid grid-cols-4 grid-rows-[2fr_1fr] gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
           {/* Erstes Bild (nimmt 2 Spalten und 1 Reihe ein) */}
           <div className="col-span-2 row-span-1">
-                <img
-                  src={Bild_3} // Bild-URL aus den Daten
-                  layout="responsive"
-                  width={500}
-                  height={500}
-                  alt={Titel}
-                  className="w-full h-full object-cover rounded-lg"
-                />
+            <img
+              src={Bild_3} // Bild-URL aus den Daten oder Fallback-Bild
+              layout="responsive"
+              width={500}
+              height={500}
+              alt={Titel}
+              className="w-full h-full object-cover rounded-lg"
+            />
           </div>
 
-          {/* Zweites Bild */}
+          {/* Zweites Bild (statisches Beispielbild) */}
           <div className="col-span-2 row-span-1">
             <Image
               src="/Images/HobbitPic/Room1Hobbit.png"
@@ -86,11 +91,11 @@ export default function Unterkunft() {
 
           {/* Text */}
           <div className="col-span-1 row-span-1">
-            <h1 className="text-lg font-bold">Dreamhouse</h1>
+            <h1 className="text-lg font-bold">{Titel}</h1>
             <span className="text-base">{`${Beschreibung}`}</span>
           </div>
 
-          {/* Drittes Bild */}
+          {/* Drittes Bild (statisches Beispielbild) */}
           <div className="col-span-2 row-span-1">
             <Image
               src="/Images/HobbitPic/Room2Hobbit.png"
@@ -102,7 +107,7 @@ export default function Unterkunft() {
             />
           </div>
 
-          {/* Viertes Bild */}
+          {/* Viertes Bild (statisches Beispielbild) */}
           <div className="col-span-1 row-span-1">
             <Image
               src="/Images/HobbitPic/Room3Hobbit.png"
@@ -116,11 +121,11 @@ export default function Unterkunft() {
         </div>
 
         {/* Buchung und weitere Informationen */}
-        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[500vh] ">
-          <div className="w-full ">
+        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[500vh]">
+          <div className="w-full">
             <ListingInfo house={house} />
           </div>
-          <div className="w-full  ">
+          <div className="w-full">
             <BookingCard house={house} />
           </div>
         </div>
