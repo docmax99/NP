@@ -18,7 +18,10 @@ export default function Unterkunft() {
 
   // Fallback-Werte für Titel und Bild
   const Beschreibung = house ? house.Beschreibung : 'Beschreibung nicht verfügbar.';
-  const Bild_3 = house ? house.Bild_3 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild
+  const Bild_3 = house ? house.Bild_3 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Front Pictuer
+  const Bild_1 = house ? house.Bild_1 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 1
+  const Bild_2 = house ? house.Bild_2 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 2
+  const Bild_4 = house ? house.Bild_4 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 3
   const Titel = house ? house.Titel || 'Unbekanntes Haus' : 'Unbekanntes Haus'; // Fallback-Titel
 
   useEffect(() => {
@@ -79,12 +82,12 @@ export default function Unterkunft() {
 
           {/* Zweites Bild (statisches Beispielbild) */}
           <div className="col-span-2 row-span-1">
-            <Image
-              src="/Images/HobbitPic/Room1Hobbit.png"
+            <img
+              src={Bild_1}
               layout="responsive"
               width={500}
               height={500}
-              alt="Room 1 Hobbit"
+              alt={Titel}
               className="w-full h-full object-cover rounded-lg"
             />
           </div>
@@ -97,8 +100,8 @@ export default function Unterkunft() {
 
           {/* Drittes Bild (statisches Beispielbild) */}
           <div className="col-span-2 row-span-1">
-            <Image
-              src="/Images/HobbitPic/Room2Hobbit.png"
+            <img
+              src={Bild_2}
               layout="responsive"
               width={900}
               height={450}
@@ -109,8 +112,8 @@ export default function Unterkunft() {
 
           {/* Viertes Bild (statisches Beispielbild) */}
           <div className="col-span-1 row-span-1">
-            <Image
-              src="/Images/HobbitPic/Room3Hobbit.png"
+            <img
+              src={Bild_4}
               layout="responsive"
               width={900}
               height={450}

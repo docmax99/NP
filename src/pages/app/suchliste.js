@@ -9,6 +9,9 @@ export default function Suchliste() {
   const router = useRouter();
   const { query } = router;
   const [houses, setHouses] = useState([]);
+  
+
+  const [filteredHouses, setFilteredHouses] = useState([]);
 
   // Häuserdaten aus der Datenbank abrufen und im State speichern
   useEffect(() => {
@@ -24,6 +27,17 @@ export default function Suchliste() {
 
     fetchHouses();
   }, []);
+
+  useEffect(() => {
+    if (query.destination) {
+      // Filtere die Häuserliste, um nur die Häuser aus demselben Land wie `destination` anzuzeigen.
+      const filtered = houses.filter((house) => house.Land === query.destination);
+      setFilteredHouses(filtered);
+    } else {
+      // Wenn kein `destination` angegeben ist, werden alle Häuser angezeigt
+      setFilteredHouses(houses);
+    }
+  }, [houses, query.destination]);
 
   return (
     <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
@@ -41,8 +55,8 @@ export default function Suchliste() {
       <main className="flex flex-col items-center gap-8 p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {/* Dynamische Anzeige aller Häuser aus der Datenbank */}
-          {houses.length > 0 ? (
-            houses.map((house) => (
+          {filteredHouses.length > 0 ? (
+            filteredHouses.map((house) => (
               <div key={house.id} className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
                 <Link href={`/app/houseHobbit?id=${house.id}`} legacyBehavior>
                   <img
@@ -57,7 +71,7 @@ export default function Suchliste() {
               </div>
             ))
           ) : (
-            <p>Keine Häuser verfügbar.</p> // Falls keine Häuser in der Datenbank sind, wird dieser Text angezeigt
+            <p>Keine Häuser Gefunden.</p> // Falls keine Häuser in der Datenbank sind, wird dieser Text angezeigt
           )}
         </div>
 

@@ -7,6 +7,7 @@ export default function ListingInfo({house}) {
   const Betten = house ? house.Betten : 0;
   const Gästeanzahl = house ? house.Gästeanzahl : 0;
   const Bewertung = house ? house.Bewertungen_int : 0;
+  const Titel_long = house ? house.Titel_long : 'Unbekanntes Haus';
   
 
 
@@ -15,7 +16,7 @@ export default function ListingInfo({house}) {
     <div className="max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg">
       {/* Unterkunft Titel und Details */}
       <div className="mb-4" >
-        <h1 className="text-2xl font-bold">Ein Verträumtes Häuschen im Auenland</h1>
+        <h1 className="text-2xl font-bold">{Titel_long}</h1>
         <span className="text-gray-600">{`${Gästeanzahl}`} Gäste · {`${Schlafzimmer}`} Schlafzimmer · {`${Betten}`} Betten · {`${Badezimmer}`} Badezimmer</span>
         
         
