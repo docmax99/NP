@@ -1,16 +1,20 @@
-export default function PriceBreakdown({ price }) {
+
+export default function PriceBreakdown({ price, nights }) {
   // Berechnungen außerhalb des JSX
-  const fullPrice = price * 6;
+  const fullnights = nights;
+  const fullPrice = price * fullnights;
   const specialOffer = 150;
   const cleaningFee = 45;
   const serviceFee = 108; // Beispiel für eine Servicegebühr
   const totalPrice = fullPrice - specialOffer + cleaningFee + serviceFee;
+  const euroFormattedFullPrice = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(fullPrice);
+  const euroFormattedTottalPrice = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(totalPrice);
 
   return (
     <div className="flex flex-col text-sm">
       <div className="flex justify-between mb-2">
-        <span>{`${price}€`} x 6 Nächte</span>
-        <span>{`${fullPrice}€`}</span>
+        <span>{`${price}€`} x {`${fullnights}`} Nächte</span>
+        <span>{`${euroFormattedFullPrice}`}</span>
       </div>
       <div className="flex justify-between mb-2">
         <span className="text-green-600">Special offer</span>
@@ -27,7 +31,7 @@ export default function PriceBreakdown({ price }) {
       <hr className="border-gray-300 mb-4" />
       <div className="flex justify-between font-bold text-lg">
         <span>Total</span>
-        <span>{`${totalPrice}€`}</span>
+        <span>{`${euroFormattedTottalPrice}`}</span>
       </div>
     </div>
   );
