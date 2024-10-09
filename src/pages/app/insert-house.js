@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { supabase } from '../../components/lib/supabaseClient';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import MathPopup from '../../components/MathPopup'; // Importiere MathPopup
 
 export default function InsertHouse() {
   const [formData, setFormData] = useState({
@@ -26,9 +27,11 @@ export default function InsertHouse() {
 
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showMathPopup, setShowMathPopup] = useState(false); // Steuert, ob das MathPopup angezeigt wird
+  const [houseData, setHouseData] = useState(null); // Speichert die hochgeladenen Daten für die spätere Weiterleitung
   const router = useRouter();
 
-  const userId = '3871b652-ab49-4eea-9a9f-a6db4be01ded'; // Fixed user ID
+  const userId = '3871b652-ab49-4eea-9a9f-a6db4be01ded'; // Feste User-ID
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -46,41 +49,53 @@ export default function InsertHouse() {
       // Insert house data into the "Houses" table
       const { data, error } = await supabase
         .from('Houses') // Insert into "Houses" table
-        .insert([
-          {
-            Erstellt: new Date().toISOString(),
-            Titel: formData.title,
-            Beschreibung: formData.description,
-            Straße: formData.street,
-            Ort: formData.city,
-            PLZ: formData.plz,
-            Land: formData.country,
-            Kosten: parseFloat(formData.price),
-            Größe: parseInt(formData.size),
-            Schlafzimmer: parseInt(formData.bedrooms),
-            Badezimmer: parseInt(formData.bathrooms),
-            Betten: parseInt(formData.beds),
-            Gästeanzahl: parseInt(formData.guestCount),
-            Haustiere: formData.petsAllowed,
-            Barrierefrei: formData.barrierFree,
-            Parkmöglichkeiten: formData.parkingAvailable,
-            Haus_Typ: formData.houseType,
-            userId: userId, // Save fixed user ID
-          },
-        ]);
+        .insert([{
+          Erstellt: new Date().toISOString(),
+          Titel: formData.title,
+          Beschreibung: formData.description,
+          Straße: formData.street,
+          Ort: formData.city,
+          PLZ: formData.plz,
+          Land: formData.country,
+          Kosten: parseFloat(formData.price),
+          Größe: parseInt(formData.size),
+          Schlafzimmer: parseInt(formData.bedrooms),
+          Badezimmer: parseInt(formData.bathrooms),
+          Betten: parseInt(formData.beds),
+          Gästeanzahl: parseInt(formData.guestCount),
+          Haustiere: formData.petsAllowed,
+          Barrierefrei: formData.barrierFree,
+          Parkmöglichkeiten: formData.parkingAvailable,
+          Haus_Typ: formData.houseType,
+          userId: userId, // Save fixed user ID
+        }]);
 
       if (error) {
         console.error('Error inserting house:', error.message);
         throw new Error(`Error inserting house: ${error.message}`);
       }
 
-      // Redirect to the homepage after successful insertion
-      router.push('/');
+      // Speichere die hochgeladenen Hausdaten
+      setHouseData(data);
+      // Zeige MathPopup nach dem erfolgreichen Upload
+      setShowMathPopup(true);
     } catch (error) {
       console.error('Error during house insertion:', error);
       setErrorMessage(`Fehler beim Inserieren des Hauses: ${error.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleMathPopupClose = (isCorrect) => {
+    if (!isCorrect) {
+      setErrorMessage('Die Matheaufgabe wurde nicht korrekt gelöst.');
+      return;
+    }
+    setShowMathPopup(false);
+    // Wenn die Matheaufgabe korrekt gelöst wurde, weiterleiten zu '/app/home'
+    if (houseData) {
+      router.push('/app/home');
     }
   };
 
@@ -170,6 +185,9 @@ export default function InsertHouse() {
         </form>
       </main>
       <Footer />
+
+      {/* MathPopup anzeigen, wenn erforderlich */}
+      {showMathPopup && <MathPopup onClose={handleMathPopupClose} />}
     </div>
   );
 }

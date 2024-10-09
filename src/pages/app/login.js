@@ -1,24 +1,26 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { supabase } from '../../components/lib/supabaseClient';
-import Cookies from 'js-cookie';
+import { useState } from 'react'; // useState-Hook von React importieren
+import { useRouter } from 'next/router'; // useRouter-Hook von Next.js importieren
+import { supabase } from '../../components/lib/supabaseClient'; // Supabase-Client importieren
+import Cookies from 'js-cookie'; // js-cookie-Bibliothek importieren
 
 export default function Login() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter(); // Router-Instanz erstellen
+  const [email, setEmail] = useState(''); // State für die E-Mail-Adresse
+  const [password, setPassword] = useState(''); // State für das Passwort
+  const [errorMessage, setErrorMessage] = useState(''); // State für Fehlermeldungen
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
+    e.preventDefault(); // Standardverhalten des Formulars verhindern
+    setErrorMessage(''); // Fehlermeldung zurücksetzen
 
+    // Anmeldung bei Supabase mit E-Mail und Passwort
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
+      // Fehlermeldung setzen, falls ein Fehler auftritt
       setErrorMessage('Anmeldefehler. Bitte überprüfe deine Eingaben.');
     } else {
       // Speichern des Tokens in einem Cookie für 7 Tage
@@ -31,9 +33,9 @@ export default function Login() {
   };
 
   return (
-<div className="relative h-screen bg-fixed bg-[url('/Images/Haus_am_See.jpg')] bg-cover bg-center flex items-center justify-center">
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
-  {/* Your other content goes here */}
+    <div className="relative h-screen bg-fixed bg-[url('/Images/Haus_am_See.jpg')] bg-cover bg-center flex items-center justify-center">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
+      {/* Dein anderer Inhalt kommt hier hin */}
       <div className="relative z-10 p-8 rounded-lg shadow-lg max-w-md w-full bg-white">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-700">Anmelden</h2>
 
