@@ -7,3 +7,4 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 // Erstellen und exportieren des Supabase-Clients
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+    console.log(supabaseUrl, supabaseAnonKey);

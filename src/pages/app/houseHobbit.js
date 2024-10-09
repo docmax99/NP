@@ -6,6 +6,7 @@ import BookingCard from '../../components/BookingCard';
 import ListingInfo from '../../components/ListingInfos';
 import { getAllHouses } from '../../services/houseService';
 import { useRouter } from 'next/router';
+import MapEmbed from '../../components/MapEmbed';
 
 export default function Unterkunft() {
   const [showCookieBanner, setShowCookieBanner] = useState(true);
@@ -17,6 +18,7 @@ export default function Unterkunft() {
   const houseId = query.id;
 
   // Fallback-Werte für Titel und Bild
+  const mapsLink = house ?  house.URL : 'URL nicht verfügbar.'; // URL-Aus der Datenbank
   const Beschreibung = house ? house.Beschreibung : 'Beschreibung nicht verfügbar.';
   const Bild_3 = house ? house.Bild_3 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Front Pictuer
   const Bild_1 = house ? house.Bild_1 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 1
@@ -124,16 +126,18 @@ export default function Unterkunft() {
         </div>
 
         {/* Buchung und weitere Informationen */}
-        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[500vh]">
+        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[200vh]">
           <div className="w-full">
             <ListingInfo house={house} />
+            <MapEmbed mapsLink={mapsLink} />
+            <p>{mapsLink}</p>
           </div>
           <div className="w-full">
             <BookingCard house={house} />
           </div>
+          
         </div>
-
-        <p className="h-[500vh]">Test</p>
+        
       </main>
 
       {/* Footer */}
@@ -161,3 +165,4 @@ export default function Unterkunft() {
     </div>
   );
 }
+

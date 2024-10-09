@@ -1,6 +1,3 @@
-import Link from 'next/link';
-import Image from 'next/image';
-
 const FeaturedListings = ({ houses, scrollContainerRef }) => (
   <div className="w-full max-w-6xl py-8 overflow-hidden">
     <div
@@ -8,10 +5,16 @@ const FeaturedListings = ({ houses, scrollContainerRef }) => (
       ref={scrollContainerRef}
       style={{
         overflowX: 'scroll',
-        scrollbarWidth: 'none',
-        msOverflowStyle: 'none',
+        scrollbarWidth: 'none', /* Firefox */
+        msOverflowStyle: 'none', /* Internet Explorer 10+ */
       }}
     >
+      <style jsx>{`
+        .scroll-container::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, and Opera */
+        }
+      `}</style>
+
       {houses.map((house, index) => (
         <div
           key={index}
