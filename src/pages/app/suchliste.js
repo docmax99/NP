@@ -58,7 +58,7 @@ export default function Suchliste() {
           {filteredHouses.length > 0 ? (
             filteredHouses.map((house) => (
               <div key={house.id} className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-                <Link href={`/app/houseHobbit?id=${house.id}`} legacyBehavior>
+                <Link href={`/app/Unterkunft?id=${house.id}`} legacyBehavior>
                   <img
                     src={house.Bild_3} // Bild-URL aus den Daten
                     width={400}

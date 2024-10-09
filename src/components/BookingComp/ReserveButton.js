@@ -1,14 +1,19 @@
-// components/ReserveButton.js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import supabase from '../lib/supabaseClient';
 
-async function createBooking(userId, houseId, checkIn, checkOut, guests, totalPrice) {
+async function createBooking(houseId, checkIn, checkOut, guests, totalPrice) {
+  console.log('Supabase Client:', supabase);
+  console.log('House ID:', houseId);
+  console.log('Check-in:', checkIn);
+  console.log('Check-out:', checkOut);
+  console.log('Guests:', guests);
+  console.log('Total Price:', totalPrice);
+
   const { data, error } = await supabase
     .from('Booking')
     .insert([
       {
-        userid: userId,
         hausid: houseId,
         start_date: checkIn,
         end_date: checkOut,
@@ -26,62 +31,32 @@ async function createBooking(userId, houseId, checkIn, checkOut, guests, totalPr
   return data;
 }
 
-async function sendConfirmationEmail(email, houseName, checkIn, checkOut, totalPrice) {
-  try {
-    const response = await fetch('/api/sendConfirmation', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        houseName,
-        checkIn,
-        checkOut,
-        totalPrice,
-      }),
-    });
 
-    const result = await response.json();
-    if (response.ok) {
-      console.log('Confirmation email sent successfully:', result.message);
-    } else {
-      console.error('Failed to send confirmation email:', result.error);
-    }
-  } catch (error) {
-    console.error('Error sending email:', error);
-  }
-}
-
-export default function ReserveButton({ userId, houseId, houseName, checkIn, checkOut, guests, totalPrice, userEmail }) {
+export default function ReserveButton({ houseId, checkIn, checkOut, guests, totalPrice }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleReserve = async () => {
-    // Prüfe, ob der Benutzer eingeloggt ist
-    const { data: sessionData } = await supabase.auth.getSession();
+    try {
+      setLoading(true);
 
-    if (!sessionData.session) {
-      // Benutzer ist nicht eingeloggt, leite zur Registrierungsseite weiter
-      router.push('/register'); // Leitet zur Registrierungsseite weiter
-      return;
+      // Buchungslogik ausführen
+      const booking = await createBooking(houseId, checkIn, checkOut, guests, totalPrice);
+
+      if (booking) {
+        alert('Buchung erfolgreich!');
+
+        // Leite den Benutzer zur Seite "/app/home" weiter
+        router.push('/app/home');
+      } else {
+        alert('Fehler beim Buchen');
+      }
+
+      setLoading(false);
+    } catch (err) {
+      console.error('Fehler bei der Buchung:', err);
+      setLoading(false);
     }
-
-    setLoading(true);
-
-    // Benutzer ist eingeloggt, Buchungslogik ausführen
-    const booking = await createBooking(userId, houseId, checkIn, checkOut, guests, totalPrice);
-
-    if (booking) {
-      alert('Buchung erfolgreich!');
-
-      // E-Mail-Bestätigung senden
-      await sendConfirmationEmail(userEmail, houseName, checkIn, checkOut, totalPrice);
-    } else {
-      alert('Fehler beim Buchen');
-    }
-
-    setLoading(false);
   };
 
   return (

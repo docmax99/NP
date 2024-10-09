@@ -1,43 +1,48 @@
 // components/BookingInputs.js
 import { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { format, differenceInCalendarDays } from 'date-fns';
 
-export default function BookingInputs({ setNights, setCheckIn, setCheckOut, setGuests }) {
-  const [checkIn, setLocalCheckIn] = useState('2024-10-17');
-  const [checkOut, setLocalCheckOut] = useState('2024-10-23');
+export default function BookingInputs({ setNights, setCheckIn, setCheckOut, setGuests, GästeDB }) {
+  const [checkInDate, setCheckInDate] = useState(new Date('2024-10-17'));
+  const [checkOutDate, setCheckOutDate] = useState(new Date('2024-10-23'));
   const [guests, setLocalGuests] = useState(1);
 
-  const calculateNights = (checkInDate, checkOutDate) => {
-    const inDate = new Date(checkInDate);
-    const outDate = new Date(checkOutDate);
-    const timeDifference = outDate.getTime() - inDate.getTime();
-    return timeDifference / (1000 * 3600 * 24); // Anzahl der Nächte berechnen
+  // Berechnung der Nächte
+  const calculateNights = (checkIn, checkOut) => {
+    if (checkIn && checkOut) {
+      return differenceInCalendarDays(checkOut, checkIn);
+    }
+    return 0;
   };
 
-  const handleCheckInChange = (e) => {
-    const value = e.target.value;
-    setLocalCheckIn(value);
-    setCheckIn(value);
-    if (new Date(value) >= new Date(checkOut)) {
-      const newCheckOutDate = new Date(value);
+  // Änderungen für Check-In und Check-Out
+  const handleCheckInChange = (date) => {
+    setCheckInDate(date);
+    setCheckIn(format(date, 'yyyy-MM-dd'));
+
+    if (checkOutDate && date >= checkOutDate) {
+      const newCheckOutDate = new Date(date);
       newCheckOutDate.setDate(newCheckOutDate.getDate() + 1);
-      setLocalCheckOut(newCheckOutDate.toLocaleDateString('en-CA'));
-      setCheckOut(newCheckOutDate.toLocaleDateString('en-CA'));
+      setCheckOutDate(newCheckOutDate);
+      setCheckOut(format(newCheckOutDate, 'yyyy-MM-dd'));
+    }
+
+    setNights(calculateNights(date, checkOutDate));
+  };
+
+  const handleCheckOutChange = (date) => {
+    if (date > checkInDate) {
+      setCheckOutDate(date);
+      setCheckOut(format(date, 'yyyy-MM-dd'));
+      setNights(calculateNights(checkInDate, date));
     } else {
-      setNights(calculateNights(value, checkOut));
+      alert('Checkout muss nach dem Check-In-Datum liegen.');
     }
   };
 
-  const handleCheckOutChange = (e) => {
-    const value = e.target.value;
-    if (new Date(value) > new Date(checkIn)) {
-      setLocalCheckOut(value);
-      setCheckOut(value);
-      setNights(calculateNights(checkIn, value));
-    } else {
-      alert('Checkout muss nach dem Checkin-Datum liegen.');
-    }
-  };
-
+  // Änderung für Gästeanzahl
   const handleGuestsChange = (e) => {
     const value = parseInt(e.target.value, 10);
     setLocalGuests(value);
@@ -45,29 +50,59 @@ export default function BookingInputs({ setNights, setCheckIn, setCheckOut, setG
   };
 
   useEffect(() => {
-    setNights(calculateNights(checkIn, checkOut));
-  }, [checkIn, checkOut]);
+    setNights(calculateNights(checkInDate, checkOutDate));
+  }, [checkInDate, checkOutDate]);
 
   return (
-    <div className="flex flex-col gap-4 mb-4">
-      <div className="flex justify-between">
+    <div className="p-6 bg-white shadow-md rounded-lg max-w-lg mx-auto ">
+      {/* Anzahl der Nächte */}
+      
+
+      {/* Datumsauswahl */}
+      <div className="flex items-center gap-6">
         <div className="flex flex-col w-full">
-          <label className="text-gray-600 text-sm">CHECK-IN</label>
-          <input type="date" value={checkIn} onChange={handleCheckInChange} className="border border-gray-300 rounded p-2 w-full" />
+          <label className="text-sm text-gray-600">CHECK-IN</label>
+          <DatePicker
+            selected={checkInDate}
+            onChange={handleCheckInChange}
+            selectsStart
+            startDate={checkInDate}
+            endDate={checkOutDate}
+            minDate={new Date()}
+            placeholderText="Wählen Sie das Check-In-Datum"
+            className="mt-1 p-3 border border-gray-300 rounded-md shadow-sm w-full focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            dateFormat="MM/dd/yyyy"
+          />
         </div>
-        <div className="flex flex-col w-full ml-4">
-          <label className="text-gray-600 text-sm">CHECKOUT</label>
-          <input type="date" value={checkOut} onChange={handleCheckOutChange} className="border border-gray-300 rounded p-2 w-full" />
+        <div className="flex flex-col w-full">
+          <label className="text-sm text-gray-600">CHECKOUT</label>
+          <DatePicker
+            selected={checkOutDate}
+            onChange={handleCheckOutChange}
+            selectsEnd
+            startDate={checkInDate}
+            endDate={checkOutDate}
+            minDate={checkInDate || new Date()}
+            placeholderText="Wählen Sie das Check-Out-Datum"
+            className="mt-1 p-3 border border-gray-300 rounded-md shadow-sm w-full focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            dateFormat="MM/dd/yyyy"
+            disabled={!checkInDate}
+          />
         </div>
       </div>
-      <div className="flex flex-col">
-        <label className="text-gray-600 text-sm">GUESTS</label>
-        <select value={guests} onChange={handleGuestsChange} className="border border-gray-300 rounded p-2">
-          {[...Array(10)].map((_, index) => (
-            <option key={index + 1} value={index + 1}>{index + 1} guest{index + 1 > 1 ? 's' : ''}</option>
+
+      {/* Gästeauswahl */}
+      <div className="flex flex-col mt-6">
+        <label className="text-sm text-gray-600">GÄSTE</label>
+        <select value={guests} onChange={handleGuestsChange} className="mt-1 p-3 border border-gray-300 rounded-md shadow-sm w-full focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+          {[...Array(GästeDB)].map((_, index) => (
+            <option key={index + 1} value={index + 1}>
+              {index + 1} Gast{index + 1 > 1 ? 'e' : ''}
+            </option>
           ))}
         </select>
       </div>
+
     </div>
   );
 }

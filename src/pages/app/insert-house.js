@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '../../components/lib/supabaseClient';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -13,72 +13,42 @@ export default function InsertHouse() {
     plz: '',
     country: '',
     price: '',
-    image1: null,
-    image2: null,
-    image3: null,
+    size: '',
+    bedrooms: '',
+    bathrooms: '',
+    beds: '',
+    houseType: '',
+    guestCount: '',
+    petsAllowed: false,
+    barrierFree: false,
+    parkingAvailable: false,
   });
 
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [previewImages, setPreviewImages] = useState([null, null, null]);
   const router = useRouter();
 
-  const checkUserSession = async () => {
-    const { data: sessionData } = await supabase.auth.getSession();
-    return sessionData.session;
-  };
+  const userId = '3871b652-ab49-4eea-9a9f-a6db4be01ded'; // Fixed user ID
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     });
-  };
-
-  const handleDrop = (e, index) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      const newPreviewImages = [...previewImages];
-      newPreviewImages[index] = URL.createObjectURL(file);
-      setPreviewImages(newPreviewImages);
-      setFormData({ ...formData, [`image${index + 1}`]: file });
-    }
-  };
-
-  const handleImageUpload = async (files) => {
-    const imageUploads = files.map(async (file, index) => {
-      if (file) {
-        const { data, error } = await supabase.storage
-          .from('house-images')
-          .upload(`public/${Date.now()}_${file.name}`, file);
-        if (error) throw error;
-        return data.Key;
-      }
-      return null;
-    });
-    return await Promise.all(imageUploads);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const session = await checkUserSession();
-    if (!session) {
-      setErrorMessage('Sie müssen eingeloggt sein, um ein Haus zu inserieren.');
-      router.push('/app/login');
-      return;
-    }
-
     try {
-      const imageUrls = await handleImageUpload([formData.image1, formData.image2, formData.image3]);
-
+      // Insert house data into the "Houses" table
       const { data, error } = await supabase
-        .from('houses')
+        .from('Houses') // Insert into "Houses" table
         .insert([
           {
+            Erstellt: new Date().toISOString(),
             Titel: formData.title,
             Beschreibung: formData.description,
             Straße: formData.street,
@@ -86,17 +56,28 @@ export default function InsertHouse() {
             PLZ: formData.plz,
             Land: formData.country,
             Kosten: parseFloat(formData.price),
-            Bild_1: imageUrls[0],
-            Bild_2: imageUrls[1],
-            Bild_3: imageUrls[2],
-            User_id: session.user.id,
+            Größe: parseInt(formData.size),
+            Schlafzimmer: parseInt(formData.bedrooms),
+            Badezimmer: parseInt(formData.bathrooms),
+            Betten: parseInt(formData.beds),
+            Gästeanzahl: parseInt(formData.guestCount),
+            Haustiere: formData.petsAllowed,
+            Barrierefrei: formData.barrierFree,
+            Parkmöglichkeiten: formData.parkingAvailable,
+            Haus_Typ: formData.houseType,
+            userId: userId, // Save fixed user ID
           },
         ]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error inserting house:', error.message);
+        throw new Error(`Error inserting house: ${error.message}`);
+      }
 
-      router.push(`/app/house?id=${data[0].id}`);
+      // Redirect to the homepage after successful insertion
+      router.push('/');
     } catch (error) {
+      console.error('Error during house insertion:', error);
       setErrorMessage(`Fehler beim Inserieren des Hauses: ${error.message}`);
     } finally {
       setLoading(false);
@@ -105,44 +86,83 @@ export default function InsertHouse() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header user={null} />
+      <Header />
       <main className="flex-grow container mx-auto p-6">
         <h1 className="text-2xl font-bold mb-6">Haus Inserieren</h1>
         {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Titel */}
+          {/* Title */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">Titel</label>
             <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
           </div>
-          {/* Beschreibung */}
+          {/* Description */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700">Beschreibung</label>
             <textarea id="description" name="description" value={formData.description} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
           </div>
-          {/* Preis */}
+          {/* Street */}
           <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Preis pro Nacht (€)</label>
-            <input type="number" id="price" name="price" value={formData.price} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+            <label htmlFor="street" className="block text-sm font-medium text-gray-700">Straße</label>
+            <input type="text" id="street" name="street" value={formData.street} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
           </div>
-
-          {/* Bilder hochladen (Drag & Drop) */}
-          <div className="grid grid-cols-3 gap-4">
-            {[1, 2, 3].map((index) => (
-              <div
-                key={index}
-                className="border-dashed border-2 border-gray-300 p-4 rounded-lg relative flex justify-center items-center cursor-pointer"
-                onDrop={(e) => handleDrop(e, index - 1)}
-                onDragOver={(e) => e.preventDefault()}
-              >
-                {previewImages[index - 1] ? (
-                  <img src={previewImages[index - 1]} alt={`Preview ${index}`} className="object-cover h-full w-full rounded-lg" />
-                ) : (
-                  <p className="text-gray-400">Bild {index} hier reinziehen</p>
-                )}
-              </div>
-            ))}
+          {/* City */}
+          <div>
+            <label htmlFor="city" className="block text-sm font-medium text-gray-700">Ort</label>
+            <input type="text" id="city" name="city" value={formData.city} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
           </div>
+          {/* Postal Code */}
+          <div>
+            <label htmlFor="plz" className="block text-sm font-medium text-gray-700">PLZ</label>
+            <input type="text" id="plz" name="plz" value={formData.plz} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* Country */}
+          <div>
+            <label htmlFor="country" className="block text-sm font-medium text-gray-700">Land</label>
+            <input type="text" id="country" name="country" value={formData.country} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* Price */}
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Preis pro Nacht (&euro;)</label>
+            <input type="number" id="price" name="price" min="0" value={formData.price} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* Size */}
+          <div>
+            <label htmlFor="size" className="block text-sm font-medium text-gray-700">Größe (m²)</label>
+            <input type="number" id="size" name="size" min="0" value={formData.size} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* House Type */}
+          <div>
+            <label htmlFor="houseType" className="block text-sm font-medium text-gray-700">Haus Typ</label>
+            <input type="text" id="houseType" name="houseType" value={formData.houseType} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* Guest Count */}
+          <div>
+            <label htmlFor="guestCount" className="block text-sm font-medium text-gray-700">Gästeanzahl</label>
+            <input type="number" id="guestCount" name="guestCount" min="1" value={formData.guestCount} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* Pets Allowed */}
+          <div>
+            <label className="inline-flex items-center">
+              <input type="checkbox" name="petsAllowed" checked={formData.petsAllowed} onChange={handleChange} />
+              <span className="ml-2">Haustiere erlaubt</span>
+            </label>
+          </div>
+          {/* Barrier Free */}
+          <div>
+            <label className="inline-flex items-center">
+              <input type="checkbox" name="barrierFree" checked={formData.barrierFree} onChange={handleChange} />
+              <span className="ml-2">Barrierefrei</span>
+            </label>
+          </div>
+          {/* Parking Available */}
+          <div>
+            <label className="inline-flex items-center">
+              <input type="checkbox" name="parkingAvailable" checked={formData.parkingAvailable} onChange={handleChange} />
+              <span className="ml-2">Parkmöglichkeiten</span>
+            </label>
+          </div>
+    
 
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300" disabled={loading}>
             {loading ? 'Lädt...' : 'Haus inserieren'}

@@ -7,34 +7,46 @@ import ListingInfo from '../../components/ListingInfos';
 import { getAllHouses } from '../../services/houseService';
 import { useRouter } from 'next/router';
 import MapEmbed from '../../components/MapEmbed';
+import Header from '../../components/Header';
+import { supabase } from '../../components/lib/supabaseClient';
+
 
 export default function Unterkunft() {
   const [showCookieBanner, setShowCookieBanner] = useState(true);
   const [house, setHouse] = useState(null);
+  const [user, setUser] = useState(null); // Zustand für Benutzer hinzufügen
   const router = useRouter();
   const { query } = router;
 
-  // `houseId` wird aus den Query-Parametern abgerufen
+  // houseId wird aus den Query-Parametern abgerufen
   const houseId = query.id;
 
   // Fallback-Werte für Titel und Bild
-  const mapsLink = house ?  house.URL : 'URL nicht verfügbar.'; // URL-Aus der Datenbank
+  const mapsDBLink = house ? house.URL : "";
   const Beschreibung = house ? house.Beschreibung : 'Beschreibung nicht verfügbar.';
-  const Bild_3 = house ? house.Bild_3 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Front Pictuer
+  const Bild_3 = house ? house.Bild_3 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Front Picture
   const Bild_1 = house ? house.Bild_1 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 1
   const Bild_2 = house ? house.Bild_2 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 2
   const Bild_4 = house ? house.Bild_4 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 3
   const Titel = house ? house.Titel || 'Unbekanntes Haus' : 'Unbekanntes Haus'; // Fallback-Titel
 
   useEffect(() => {
-    // Nur abrufen, wenn die `houseId` vorhanden ist
+    // Überprüfen, ob ein Benutzer eingeloggt ist
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    fetchUser();
+
+    // Nur abrufen, wenn die houseId vorhanden ist
     if (houseId) {
       const fetchHouse = async () => {
         try {
           const houseData = await getAllHouses();
           console.log("Abgerufene Hausdaten:", houseData);
 
-          // Finde das Haus basierend auf der `houseId` (UUID wird als String verglichen)
+          // Finde das Haus basierend auf der houseId (UUID wird als String verglichen)
           const selectedHouse = houseData.find((h) => h.id === houseId);
           setHouse(selectedHouse);
           console.log("Ausgewähltes Haus:", selectedHouse);
@@ -45,17 +57,12 @@ export default function Unterkunft() {
 
       fetchHouse();
     }
-  }, [houseId]); // `useEffect` wird erneut ausgeführt, wenn `houseId` geändert wird
+  }, [houseId]); // useEffect wird erneut ausgeführt, wenn houseId geändert wird
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="bg-slate-700 text-white p-2 flex justify-between items-center shadow-md">
-        <Link href="/app/home">
-          <Image src="/Images/LogoNicePlaces.png" width={100} height={100} alt="Logo" className="ml-4" />
-        </Link>
-        <Dropdown />
-      </header>
+      <Header user={user} onAvatarClick={() => router.push('/app/login')} onLogout={() => supabase.auth.signOut()} />
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center gap-4 p-2 bg-gray-100">
@@ -82,7 +89,7 @@ export default function Unterkunft() {
             />
           </div>
 
-          {/* Zweites Bild (statisches Beispielbild) */}
+          {/* Zweites Bild */}
           <div className="col-span-2 row-span-1">
             <img
               src={Bild_1}
@@ -97,10 +104,10 @@ export default function Unterkunft() {
           {/* Text */}
           <div className="col-span-1 row-span-1">
             <h1 className="text-lg font-bold">{Titel}</h1>
-            <span className="text-base">{`${Beschreibung}`}</span>
+            <span className="text-base">{Beschreibung}</span>
           </div>
 
-          {/* Drittes Bild (statisches Beispielbild) */}
+          {/* Drittes Bild */}
           <div className="col-span-2 row-span-1">
             <img
               src={Bild_2}
@@ -112,7 +119,7 @@ export default function Unterkunft() {
             />
           </div>
 
-          {/* Viertes Bild (statisches Beispielbild) */}
+          {/* Viertes Bild */}
           <div className="col-span-1 row-span-1">
             <img
               src={Bild_4}
@@ -126,16 +133,14 @@ export default function Unterkunft() {
         </div>
 
         {/* Buchung und weitere Informationen */}
-        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[200vh]">
+        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[150vh]">
           <div className="w-full">
             <ListingInfo house={house} />
-            <MapEmbed mapsLink={mapsLink} />
-            <p>{mapsLink}</p>
+            <MapEmbed mapsLink={mapsDBLink} />
           </div>
           <div className="w-full">
             <BookingCard house={house} />
-          </div>
-          
+          </div> 
         </div>
         
       </main>
@@ -165,4 +170,3 @@ export default function Unterkunft() {
     </div>
   );
 }
-

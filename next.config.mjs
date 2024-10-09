@@ -9,7 +9,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'evapvrkechtafxfpkvn.supabase.co',
+        hostname: 'evapvrkechtafxfxpkvn.supabase.co',  // Korrigierte Domain
       },
     ],
   },
