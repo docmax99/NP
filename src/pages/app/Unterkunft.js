@@ -139,8 +139,21 @@ export default function Unterkunft() {
             <MapEmbed mapsLink={mapsDBLink} />
           </div>
           <div className="w-full">
-            <BookingCard house={house} />
+            <BookingCard house={house} Ankuft={query.arrivalDate} Abgang={query.departureDate} GästeZahl={query.guests} />
           </div> 
+        </div>
+        <div style={{ padding: '20px' }}>
+          <ul>
+            <li>
+              <strong>Anreise:</strong> {query.arrivalDate || '(empty)'}
+            </li>
+            <li>
+              <strong>Abreise:</strong> {query.departureDate || '(empty)'}
+            </li>
+            <li>
+              <strong>Anzahl der Gäste:</strong> {query.guests || '(empty)'}
+            </li>
+          </ul>
         </div>
         
       </main>

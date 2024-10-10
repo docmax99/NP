@@ -4,13 +4,12 @@ import Dropdown from '../../components/Dropdown';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { getAllHouses } from '../../services/houseService';
+import { supabase } from '../../components/lib/supabaseClient';
 
 export default function Suchliste() {
   const router = useRouter();
   const { query } = router;
   const [houses, setHouses] = useState([]);
-  
-
   const [filteredHouses, setFilteredHouses] = useState([]);
 
   // Häuserdaten aus der Datenbank abrufen und im State speichern
@@ -28,16 +27,65 @@ export default function Suchliste() {
     fetchHouses();
   }, []);
 
+  // Filtert die Häuserliste basierend auf den Suchkriterien
   useEffect(() => {
-    if (query.destination) {
-      // Filtere die Häuserliste, um nur die Häuser aus demselben Land wie `destination` anzuzeigen.
-      const filtered = houses.filter((house) => house.Land === query.destination);
-      setFilteredHouses(filtered);
-    } else {
-      // Wenn kein `destination` angegeben ist, werden alle Häuser angezeigt
-      setFilteredHouses(houses);
+    const filterHouses = async () => {
+      if (query.destination && query.arrivalDate && query.departureDate && query.guests) {
+        // Zuerst filtern wir nach Land
+        let filtered = houses.filter((house) => house.Land === query.destination);
+
+        // Filtern nach Häusern, die in dem angegebenen Zeitraum frei sind
+        const availableHouses = await getAvailableHousesInDateRange(
+          query.arrivalDate,
+          query.departureDate
+        );
+
+        // Überprüfen, ob das Haus nicht in der Liste der gebuchten Häuser ist
+        filtered = filtered.filter((house) =>
+          availableHouses.some((availableHouse) => availableHouse.id === house.id)
+        );
+
+        // Filtern nach der Anzahl der Gäste (Kapazität des Hauses muss >= Gästeanzahl sein)
+        filtered = filtered.filter((house) => house.Gästeanzahl >= parseInt(query.guests));
+
+        setFilteredHouses(filtered);
+      } else if (query.destination) {
+        // Wenn nur `destination` angegeben ist, filtern wir nur nach dem Land
+        const filtered = houses.filter((house) => house.Land === query.destination);
+        setFilteredHouses(filtered);
+      } else {
+        // Wenn kein `destination` angegeben ist, werden alle Häuser angezeigt
+        setFilteredHouses(houses);
+      }
+    };
+
+    filterHouses();
+  }, [houses, query]);
+
+  // Funktion zur Abfrage der Häuser, die im angegebenen Zeitraum verfügbar sind
+  const getAvailableHousesInDateRange = async (arrivalDate, departureDate) => {
+    try {
+      // Abfrage in Supabase, um alle Buchungen zu erhalten, die mit dem Zeitraum kollidieren
+      const { data, error } = await supabase
+        .from('Booking')
+        .select('hausId, start_date, end_date')
+        .or(`and(start_date.lte.${departureDate},end_date.gte.${arrivalDate})`);
+
+      if (error) {
+        console.error('Fehler beim Abrufen der Verfügbarkeiten:', error);
+        return [];
+      }
+
+      // Gebuchte Haus-IDs sammeln
+      const bookedHouseIds = data.map((booking) => booking.hausId);
+
+      // Häuser filtern, die nicht gebucht sind
+      return houses.filter((house) => !bookedHouseIds.includes(house.id));
+    } catch (error) {
+      console.error('Fehler bei der Abfrage der verfügbaren Häuser:', error);
+      return [];
     }
-  }, [houses, query.destination]);
+  };
 
   return (
     <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
@@ -54,18 +102,34 @@ export default function Suchliste() {
       {/* Main Content */}
       <main className="flex flex-col items-center gap-8 p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {/* Dynamische Anzeige aller Häuser aus der Datenbank */}
+          {/* Dynamische Anzeige aller gefilterten Häuser aus der Datenbank */}
           {filteredHouses.length > 0 ? (
             filteredHouses.map((house) => (
-              <div key={house.id} className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl">
-                <Link href={`/app/Unterkunft?id=${house.id}`} legacyBehavior>
-                  <img
-                    src={house.Bild_3} // Bild-URL aus den Daten
-                    width={400}
-                    height={300}
-                    alt={house.Titel}
-                    className="w-full h-48 object-cover rounded-t-xl"
-                  />
+              <div
+                key={house.id}
+                className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col items-center p-4 hover:shadow-xl"
+              >
+                <Link
+                  href={{
+                    pathname: `/app/Unterkunft`,
+                    query: {
+                      id: house.id,
+                      arrivalDate: query.arrivalDate,
+                      departureDate: query.departureDate,
+                      guests: query.guests,
+                    },
+                  }}
+                  legacyBehavior
+                >
+                  <a>
+                    <img
+                      src={house.Bild_3} // Bild-URL aus den Daten
+                      width={400}
+                      height={300}
+                      alt={house.Titel}
+                      className="w-full h-48 object-cover rounded-t-xl"
+                    />
+                  </a>
                 </Link>
                 <h2 className="text-lg font-semibold mt-4">{house.Titel}</h2>
               </div>
@@ -77,12 +141,19 @@ export default function Suchliste() {
 
         {/* Zusätzliche Informationen basierend auf den Query-Parametern */}
         <div style={{ padding: '20px' }}>
-          <h1>Ergebnisseite</h1>
           <ul>
-            <li><strong>Reiseziel:</strong> {query.destination || '(empty)'}</li>
-            <li><strong>Anreise:</strong> {query.arrivalDate || '(empty)'}</li>
-            <li><strong>Abreise:</strong> {query.departureDate || '(empty)'}</li>
-            <li><strong>Anzahl der Gäste:</strong> {query.guests || '(empty)'}</li>
+            <li>
+              <strong>Reiseziel:</strong> {query.destination || '(empty)'}
+            </li>
+            <li>
+              <strong>Anreise:</strong> {query.arrivalDate || '(empty)'}
+            </li>
+            <li>
+              <strong>Abreise:</strong> {query.departureDate || '(empty)'}
+            </li>
+            <li>
+              <strong>Anzahl der Gäste:</strong> {query.guests || '(empty)'}
+            </li>
           </ul>
         </div>
       </main>
@@ -90,10 +161,18 @@ export default function Suchliste() {
       {/* Footer mit Links */}
       <footer className="bg-black text-white p-4">
         <nav className="space-x-4 text-center">
-          <Link href="/about" legacyBehavior><a className="hover:underline">Über uns</a></Link>
-          <Link href="/contact" legacyBehavior><a className="hover:underline">Kontakt</a></Link>
-          <Link href="/app/impressum" legacyBehavior><a className="hover:underline">Impressum</a></Link>
-          <Link href="/privacy" legacyBehavior><a className="hover:underline">Datenschutz</a></Link>
+          <Link href="/about" legacyBehavior>
+            <a className="hover:underline">Über uns</a>
+          </Link>
+          <Link href="/contact" legacyBehavior>
+            <a className="hover:underline">Kontakt</a>
+          </Link>
+          <Link href="/app/impressum" legacyBehavior>
+            <a className="hover:underline">Impressum</a>
+          </Link>
+          <Link href="/privacy" legacyBehavior>
+            <a className="hover:underline">Datenschutz</a>
+          </Link>
         </nav>
       </footer>
     </div>
