@@ -7,11 +7,6 @@ const FeaturedListings = ({ houses, scrollContainerRef }) => (
       className="flex gap-8 px-4 py-4 scroll-smooth snap-x snap-mandatory scroll-container overflow-x-scroll"
       ref={scrollContainerRef}
     >
-      <style jsx>{`
-        .scroll-container::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
 
       {houses.map((house, index) => (
         <div

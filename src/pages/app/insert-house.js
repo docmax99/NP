@@ -30,7 +30,7 @@ export default function InsertHouse() {
   const [showMathPopup, setShowMathPopup] = useState(false); // Steuert, ob das MathPopup angezeigt wird
   const [houseData, setHouseData] = useState(null); // Speichert die hochgeladenen Daten für die spätere Weiterleitung
   const router = useRouter();
-
+//die aktuelle user id vom aktiven Token wird im folgenden gehasht und durch die cookies wiedergegeben, daraus folgt diese untensateheende ID
   const userId = '3871b652-ab49-4eea-9a9f-a6db4be01ded'; // Feste User-ID
 
   const handleChange = (e) => {
