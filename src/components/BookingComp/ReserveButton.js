@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import supabase from '../lib/supabaseClient';
+import { supabase } from '../../components/lib/supabaseClient';
+
 
 async function createBooking(houseId, checkIn, checkOut, guests, totalPrice) {
   console.log('Supabase Client:', supabase);
@@ -14,7 +15,7 @@ async function createBooking(houseId, checkIn, checkOut, guests, totalPrice) {
     .from('Booking')
     .insert([
       {
-        hausid: houseId,
+        hausId: houseId,
         start_date: checkIn,
         end_date: checkOut,
         number_of_guests: guests,
