@@ -128,3 +128,4 @@ export default function BookingInputs({ setNights, setCheckIn, setCheckOut, setG
     </div>
   );
 }
+

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Dropdown from '../../components/Dropdown';
+import Header from '../../components/Header';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { getAllHouses } from '../../services/houseService';
@@ -89,16 +90,7 @@ export default function Suchliste() {
 
   return (
     <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
-      {/* Header */}
-      <header className="bg-slate-700 text-white p-4 flex justify-between items-center shadow-md">
-        <div className="flex items-center">
-          <Link href="/app/home">
-            <Image src="/Images/LogoNicePlaces.png" width={140} height={140} alt="Logo" className="ml-6" />
-          </Link>
-        </div>
-        <Dropdown />
-      </header>
-
+     <Header />
       {/* Main Content */}
       <main className="flex flex-col items-center gap-8 p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
