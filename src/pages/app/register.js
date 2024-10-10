@@ -6,6 +6,7 @@
   export default function Register() {
     const router = useRouter();
     const [formData, setFormData] = useState({
+      User_Id: crypto.randomUUID(),
       First_Name: '',
       Last_Name: '',
       Email: '',
@@ -16,9 +17,9 @@
       Ort: '',
       Land: 'DE', // Standardwert auf 'DE' gesetzt
     });
-    const [profileImage, setProfileImage] = useState(null);
     const [profileImagePreview, setProfileImagePreview] = useState(null);
     const [error, setError] = useState('');
+    const [profileImagePath, setProfileImagePath] = useState(null);
 
     const handleChange = (e) => {
       setFormData({
@@ -27,15 +28,28 @@
       });
     };
 
-    const handleImageUpload = (file) => {
-      setProfileImage(file);
-
+    const handleImageUpload = async (file) => {
       // Vorschau des Bildes setzen
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
+      
+      // Bild in Bucket uploaden und url an formData übergeben
+      const folderName = formData.User_Id;
+      const filePath = `${folderName}/${file.name}`;
+      console.log(filePath)
+      
+      const {data, error } = await supabase.storage.from('Users').upload(filePath, file);
+      if (error) {
+        console.error('Fehler beim Hochladen des Profilbildes:', error.message);
+        setError(error.message);
+        return;
+      }
+
+      setProfileImagePath(data.path);
+      console.log(data.path)
     };
 
     const handleRegister = async (e) => {
@@ -62,34 +76,14 @@
           setError(authError.message);
           return;
         }
-
-        const user = authData.user;
-
-        // Profilbild hochladen, falls vorhanden
-        let finalProfileImagePath = 'default-avatar-url'; // Standardbild-URL
-        if (profileImage) {
-          const fileName = `${user.id}/Profilbild`; // Ordner für jeden Benutzer im Supabase-Speicher
-          const { data: imageData, error: uploadError } = await supabase.storage
-            .from('Users')
-            .upload(fileName, profileImage);
-
-          if (uploadError) {
-            console.log('Fehler beim Hochladen des Profilbildes:', uploadError.message);
-            setError(uploadError.message);
-            return;
-          }
-
-          // URL des hochgeladenen Bildes abrufen
-          const { data: publicUrlData } = supabase.storage.from('Users').getPublicUrl(fileName);
-          finalProfileImagePath = publicUrlData.publicUrl;
-        }
+        console.log('Benutzer erfolgreich registriert:', authData.user.id);
 
         // Benutzerinformationen in die Datenbanktabelle 'User' einfügen
         const { data, error: insertError } = await supabase
           .from('User')
           .insert([
             {
-              id: user.id,
+              id: formData.User_Id,
               First_Name: formData.First_Name,
               Last_Name: formData.Last_Name,
               Email: formData.Email,
@@ -98,9 +92,8 @@
               PLZ: formData.PLZ,
               Ort: formData.Ort,
               Land: formData.Land,
-              Profilbild: finalProfileImagePath, // Bildpfad des hochgeladenen Profilbildes oder Standardbild
             },
-          ]);
+          ]).select();
 
         if (insertError) {
           console.log('Fehler beim Einfügen in die Tabelle:', insertError.message);
@@ -108,7 +101,7 @@
           return;
         }
 
-        console.log('Benutzer erfolgreich registriert:', data);
+        console.log('User inserted:', data);
 
         // Weiterleitung zur Anmeldeseite
         router.push('/app/login');
