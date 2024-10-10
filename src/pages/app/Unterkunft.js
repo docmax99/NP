@@ -20,15 +20,7 @@ export default function Unterkunft() {
 
   // houseId wird aus den Query-Parametern abgerufen
   const houseId = query.id;
-
-  // Fallback-Werte für Titel und Bild
-  const mapsDBLink = house ? house.URL : "";
-  const Beschreibung = house ? house.Beschreibung : 'Beschreibung nicht verfügbar.';
-  const Bild_3 = house ? house.Bild_3 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Front Picture
-  const Bild_1 = house ? house.Bild_1 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 1
-  const Bild_2 = house ? house.Bild_2 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 2
-  const Bild_4 = house ? house.Bild_4 || '/Images/placeholder.png' : '/Images/placeholder.png'; // Fallback-Bild // Room 3
-  const Titel = house ? house.Titel || 'Unbekanntes Haus' : 'Unbekanntes Haus'; // Fallback-Titel
+  const mapsDBLink = house ? house.URL : ""; // Link zur Google Maps-Seite des Hauses
 
   useEffect(() => {
     // Überprüfen, ob ein Benutzer eingeloggt ist
@@ -43,11 +35,14 @@ export default function Unterkunft() {
     if (houseId) {
       const fetchHouse = async () => {
         try {
-          const houseData = await getAllHouses();
-          console.log("Abgerufene Hausdaten:", houseData);
+          const { data, error } = await supabase
+        .from('Houses')
+        .select('*')
+        .eq('id', houseId)
 
-          // Finde das Haus basierend auf der houseId (UUID wird als String verglichen)
-          const selectedHouse = houseData.find((h) => h.id === houseId);
+        if (error)console.error('Fehler beim Abrufen des Hauses:', error);
+
+        const selectedHouse = data[0];
           setHouse(selectedHouse);
           console.log("Ausgewähltes Haus:", selectedHouse);
         } catch (error) {
@@ -69,7 +64,7 @@ export default function Unterkunft() {
         {/* Haus Titel */}
         <div className="text-4xl text-inherit">
           {house ? (
-            <h1>{house.Titel}</h1>
+            <h1>{house?.Titel}</h1>
           ) : (
             <p>Haus wird geladen...</p>
           )}
@@ -80,11 +75,11 @@ export default function Unterkunft() {
           {/* Erstes Bild (nimmt 2 Spalten und 1 Reihe ein) */}
           <div className="col-span-2 row-span-1">
             <img
-              src={Bild_3} // Bild-URL aus den Daten oder Fallback-Bild
+              src={house?.bilder[0] ?? ''} // Bild-URL aus den Daten oder Fallback-Bild
               layout="responsive"
               width={500}
               height={500}
-              alt={Titel}
+              alt={house?.Titel}
               className="w-full h-full object-cover rounded-lg"
             />
           </div>
@@ -92,25 +87,25 @@ export default function Unterkunft() {
           {/* Zweites Bild */}
           <div className="col-span-2 row-span-1">
             <img
-              src={Bild_1}
+              src={house?.bilder[1] ?? ''}
               layout="responsive"
               width={500}
               height={500}
-              alt={Titel}
+              alt={house?.Titel}
               className="w-full h-full object-cover rounded-lg"
             />
           </div>
 
           {/* Text */}
           <div className="col-span-1 row-span-1">
-            <h1 className="text-lg font-bold">{Titel}</h1>
-            <span className="text-base">{Beschreibung}</span>
+            <h1 className="text-lg font-bold">{house?.Titel}</h1>
+            <span className="text-base">{house?.Beschreibung}</span>
           </div>
 
           {/* Drittes Bild */}
           <div className="col-span-2 row-span-1">
             <img
-              src={Bild_2}
+              src={house?.bilder[2] ?? ''}
               layout="responsive"
               width={900}
               height={450}
@@ -122,7 +117,7 @@ export default function Unterkunft() {
           {/* Viertes Bild */}
           <div className="col-span-1 row-span-1">
             <img
-              src={Bild_4}
+              src={house?.bilder[3] ?? ''}
               layout="responsive"
               width={900}
               height={450}

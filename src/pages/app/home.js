@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { getAllHouses } from "../../services/houseService";
 import Header from '../../components/Header';
 import SearchBar from '../../components/SearchBar';
-import FeaturedListings from '../../components/FeaturedListings';
+import FeaturedListings from '../../components/featuredListings';
 import Footer from '../../components/Footer';
 
 export default function Home() {

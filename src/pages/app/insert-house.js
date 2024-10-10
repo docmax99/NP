@@ -7,6 +7,7 @@ import MathPopup from '../../components/MathPopup'; // Importiere MathPopup
 
 export default function InsertHouse() {
   const [formData, setFormData] = useState({
+    id: crypto.randomUUID(),
     title: '',
     description: '',
     street: '',
@@ -29,8 +30,9 @@ export default function InsertHouse() {
   const [loading, setLoading] = useState(false);
   const [showMathPopup, setShowMathPopup] = useState(false); // Steuert, ob das MathPopup angezeigt wird
   const [houseData, setHouseData] = useState(null); // Speichert die hochgeladenen Daten für die spätere Weiterleitung
+  const [houseImageUrls, setHouseImageUrls] = useState([]); // Speichert die öffentliche URL des Bildes
+  const [uploadedFiles, setUploadedFiles] = useState([]); // Speichert die hochgeladenen Dateien
   const router = useRouter();
-//die aktuelle user id vom aktiven Token wird im folgenden gehasht und durch die cookies wiedergegeben, daraus folgt diese untensateheende ID
   const userId = '3871b652-ab49-4eea-9a9f-a6db4be01ded'; // Feste User-ID
 
   const handleChange = (e) => {
@@ -41,15 +43,48 @@ export default function InsertHouse() {
     });
   };
 
+  const handleImageUpload = async (file) => {
+
+    // Bild in Supabase Bucket hochladen
+    const folderName = formData.id; // ID als Ordnername nutzen
+    const filePath = `${folderName}/${file.name}`;
+    
+    const { data, error } = await supabase.storage.from('Houses').upload(filePath, file);
+    if (error) {
+      console.error('Fehler beim Hochladen des Hausbildes:', error.message);
+      setErrorMessage(error.message);
+      return;
+    }
+    console.log('Bild hochgeladen:', data.fullPath);
+
+    // Öffentliche URL des Bildes holen
+    const { data: publicData, error: publicError } = supabase
+      .storage
+      .from('Houses')
+      .getPublicUrl(filePath);
+
+    if (publicError) {
+      console.error('Fehler beim Abrufen der öffentlichen URL:', publicError.message);
+      setErrorMessage(publicError.message);
+      return;
+    }
+
+    console.log('Öffentliche URL:', publicData.publicUrl);
+
+    setHouseImageUrls((existingUrls) => [...existingUrls, publicData.publicUrl]); // Speichere die öffentliche URL des Bildes
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       // Insert house data into the "Houses" table
+      console.log(houseImageUrls)
       const { data, error } = await supabase
-        .from('Houses') // Insert into "Houses" table
+        .from('Houses')
         .insert([{
+          id: formData.id,
           Erstellt: new Date().toISOString(),
           Titel: formData.title,
           Beschreibung: formData.description,
@@ -68,6 +103,7 @@ export default function InsertHouse() {
           Parkmöglichkeiten: formData.parkingAvailable,
           Haus_Typ: formData.houseType,
           userId: userId, // Save fixed user ID
+          bilder: houseImageUrls, // Speichere die öffentliche URL des Bildes
         }]);
 
       if (error) {
@@ -93,7 +129,6 @@ export default function InsertHouse() {
       return;
     }
     setShowMathPopup(false);
-    // Wenn die Matheaufgabe korrekt gelöst wurde, weiterleiten zu '/app/home'
     if (houseData) {
       router.push('/app/home');
     }
@@ -177,15 +212,45 @@ export default function InsertHouse() {
               <span className="ml-2">Parkmöglichkeiten</span>
             </label>
           </div>
-    
+          {/* Image Upload */}
+          <div className="border-dashed border-2 border-gray-300 p-4 rounded relative">
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => {
+                const files = Array.from(e.target.files);
+                setUploadedFiles(files);
+                files.forEach((file) => {
+                  handleImageUpload(file);
+                  console.log(houseImageUrls)
+                });
+              } 
+             }
+              className="cursor-pointer absolute inset-0 opacity-0 w-full h-full"
+            />
+            <div className="flex flex-wrap gap-2">	
+            {uploadedFiles.length > 0 ? (
+              uploadedFiles.map((preview, index) => (
+                <img
+                  key={index}
+                  src={URL.createObjectURL(preview)}
+                  alt={preview.name}
+                  className="w-24 h-24 object-cover rounded"
+                />
+              ))
+            ) : (
+              <p className="text-center text-gray-400">Klick hier oder ziehe ein Bild hinein</p>
+            )}
+          </div>
 
+          </div>
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300" disabled={loading}>
             {loading ? 'Lädt...' : 'Haus inserieren'}
           </button>
         </form>
       </main>
       <Footer />
-
       {/* MathPopup anzeigen, wenn erforderlich */}
       {showMathPopup && <MathPopup onClose={handleMathPopupClose} />}
     </div>
