@@ -21,7 +21,7 @@ const Header = () => {
         const { data: imageUrl } = await supabase
           .storage
           .from('Users')
-          .getPublicUrl(`${user.id}`);
+          .getPublicUrl(`${user.id}Profilepic`);
 
         setProfileImageUrl(imageUrl.publicUrl);
       }
