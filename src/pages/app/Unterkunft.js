@@ -138,7 +138,7 @@ export default function Unterkunft() {
         </div>
 
         {/* Buchung und weitere Informationen */}
-        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[120vh]">
+        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[110vh]">
           <div className="w-full">
             <ListingInfo house={house} />
             

@@ -3,6 +3,7 @@ export default function PriceBreakdown({ price, nights, addOnPrice }) {
   const fullnights = nights;
   const fullPrice = price * fullnights;
   const specialOffer = 0.15;
+  const specialOfferPrice = specialOffer * fullPrice;
   const cleaningFee = 45;
   const serviceFee = 108;
 
@@ -20,7 +21,7 @@ export default function PriceBreakdown({ price, nights, addOnPrice }) {
       </div>
       <div className="flex justify-between mb-2">
         <span className="text-green-600">Sonderangebot</span>
-        <span className="text-green-600">-{specialOffer * fullPrice}€</span>
+        <span className="text-green-600">-{specialOfferPrice.toFixed(2)}€</span>
       </div>
       <div className="flex justify-between mb-2">
         <span>Reinigungsgebühr</span>
