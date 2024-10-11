@@ -28,7 +28,6 @@ const FeaturedListings = ({ houses, scrollContainerRef }) => (
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
               <div className="absolute bottom-0 left-0 w-full p-4 text-white opacity-0 group-hover:opacity-100 transition duration-500">
                 <h2 className="text-xl font-bold">{house.Titel}</h2>
-                <p className="text-sm mt-1">{house.Beschreibung}</p>
               </div>
             </div>
           </Link>
