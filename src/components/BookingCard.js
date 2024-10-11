@@ -24,7 +24,7 @@ export default function BookingCard({ house, userId, Ankunft, Abgang, GästeZahl
  
 
   return (
-    <div className="flex flex-col max-w-md mx-auto bg-white rounded-md shadow-md p-6 sticky top-10 border border-gray-200">
+    <div className="flex flex-col max-w-md mx-auto bg-white rounded-md shadow-md p-6 top-10 border border-gray-200">
       {/* Preisübersicht */}
       <PriceSection price={houseData.Kosten || 0} />
 
