@@ -9,18 +9,24 @@ import { useRouter } from 'next/router';
 import MapEmbed from '../../components/MapEmbed';
 import Header from '../../components/Header';
 import { supabase } from '../../components/lib/supabaseClient';
+import WeatherComponent from '../../components/WeatherComponent';
+import AddOns from '../../components/AddOns';
+
+
 
 
 export default function Unterkunft() {
   const [showCookieBanner, setShowCookieBanner] = useState(true);
   const [house, setHouse] = useState(null);
   const [user, setUser] = useState(null); // Zustand für Benutzer hinzufügen
+  const [addOnPrice, setAddOnPrice] = useState(0); // Zustand für den Preis der Add-Ons
   const router = useRouter();
   const { query } = router;
 
   // houseId wird aus den Query-Parametern abgerufen
   const houseId = query.id;
   const mapsDBLink = house ? house.URL : ""; // Link zur Google Maps-Seite des Hauses
+  const Ort = house ? house.Ort : ""; // Ort des Hauses
 
   useEffect(() => {
     // Überprüfen, ob ein Benutzer eingeloggt ist
@@ -53,6 +59,11 @@ export default function Unterkunft() {
       fetchHouse();
     }
   }, [houseId]); // useEffect wird erneut ausgeführt, wenn houseId geändert wird
+
+  // Zustand für den Preis der Add-Ons
+  const handleAddOnPriceChange = (price) => {
+    setAddOnPrice(price);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -130,25 +141,25 @@ export default function Unterkunft() {
         <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[150vh]">
           <div className="w-full">
             <ListingInfo house={house} />
-            <MapEmbed mapsLink={mapsDBLink} />
+            
           </div>
           <div className="w-full">
-            <BookingCard house={house} Ankuft={query.arrivalDate} Abgang={query.departureDate} GästeZahl={query.guests} />
+            <BookingCard house={house} Ankuft={query.arrivalDate} Abgang={query.departureDate} GästeZahl={query.guests} addOnPrice={addOnPrice}/>
           </div> 
+          
+             
         </div>
-        <div style={{ padding: '20px' }}>
-          <ul>
-            <li>
-              <strong>Anreise:</strong> {query.arrivalDate || '(empty)'}
-            </li>
-            <li>
-              <strong>Abreise:</strong> {query.departureDate || '(empty)'}
-            </li>
-            <li>
-              <strong>Anzahl der Gäste:</strong> {query.guests || '(empty)'}
-            </li>
-          </ul>
-        </div>
+          
+          {/* Hier fügen wir die AddOns-Komponente ein */}
+          <div className="w-full max-w-6xl mt-4">
+            <AddOns onPriceChange={handleAddOnPriceChange} />
+          </div>
+          <div className="w-full max-w-6xl mt-4 p-6 bg-white rounded-lg shadow-2xl">
+          <WeatherComponent Ort={Ort} />
+          <MapEmbed mapsLink={mapsDBLink} />
+          </div>
+
+        
         
       </main>
 
