@@ -2,6 +2,8 @@
   import { useRouter } from 'next/router';
   import { supabase } from '../../components/lib/supabaseClient';
   import ImageUpload from '../../components/ImageUpload';
+  import BackButton from '../../components/BackButton'; // BackButton-Komponente importieren
+
 
   export default function Register() {
     const router = useRouter();
@@ -114,6 +116,7 @@
     return (
       <div className="relative h-screen bg-fixed bg-[url('/Images/Haus_am_See.jpg')] bg-cover bg-center flex items-center justify-center">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
+        <BackButton />
         <div className="bg-slate-50 p-8 rounded-3xl shadow-2xl max-w-lg w-full relative z-10">
           <h2 className="text-2xl font-bold mb-6 text-center">Registrieren</h2>
           <form onSubmit={handleRegister} className="space-y-4">
