@@ -115,7 +115,7 @@ export default function Unterkunft() {
               width={900}
               height={450}
               alt="Room 2 Hobbit"
-              className="w-full aspect-[2/1] object-cover rounded-xl"
+              className="w-full h-full object-cover rounded-xl"
             />
           </div>
 
