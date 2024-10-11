@@ -25,6 +25,7 @@ export default function InsertHouse() {
     smoking: false,
     barrierFree: false,
     parkingAvailable: false,
+    URL: '',
   });
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -106,6 +107,7 @@ export default function InsertHouse() {
           Haus_Typ: formData.houseType,
           userId: userId, // Save fixed user ID
           bilder: houseImageUrls, // Speichere die öffentliche URL des Bildes
+          URL: formData.URL,
         }]);
 
       if (error) {
@@ -207,6 +209,11 @@ export default function InsertHouse() {
           <div>
             <label htmlFor="beds" className="block text-sm font-medium text-gray-700">Betten</label>
             <input type="number" id="beds" name="beds" min="1" value={formData.beds} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* URL */}
+          <div>
+            <label htmlFor="URL" className="block text-sm font-medium text-gray-700">URL</label>
+            <input type="text" id="URL" name="URL" value={formData.URL} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
           </div>
           {/* Pets Allowed */}
           <div>
