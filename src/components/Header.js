@@ -19,7 +19,7 @@ const Header = () => {
 
       {/* Navigation Links */}
       <nav className="hidden md:flex items-center space-x-8">
-        <Link href="/app/explore">
+        <Link href="/app/suchliste">
           <span className="text-lg font-semibold hover:text-indigo-200 transition duration-300">Entdecken</span>
         </Link>
         <Link href="/app/about">

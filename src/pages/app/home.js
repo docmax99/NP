@@ -6,6 +6,7 @@ import Header from '../../components/Header';
 import SearchBar from '../../components/SearchBar';
 import FeaturedListings from '../../components/featuredListings';
 import Footer from '../../components/Footer';
+import CookieBanner from '../../components/CookieBanner';
 
 export default function Home() {
   const [houses, setHouses] = useState([]);  // Zustand für die Liste der Häuser
@@ -68,6 +69,7 @@ export default function Home() {
         <SearchBar inputData={inputData} handleChange={handleChange} handleSearch={handleSearch} />
         <FeaturedListings houses={houses} scrollContainerRef={scrollContainerRef} />
       </main>
+      <CookieBanner />
 
       {/* Footer */}
       <Footer />

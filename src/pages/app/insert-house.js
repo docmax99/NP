@@ -16,12 +16,13 @@ export default function InsertHouse() {
     country: '',
     price: '',
     size: '',
+    guestCount: '',
+    houseType: '',
     bedrooms: '',
     bathrooms: '',
     beds: '',
-    houseType: '',
-    guestCount: '',
     petsAllowed: false,
+    smoking: false,
     barrierFree: false,
     parkingAvailable: false,
   });
@@ -99,6 +100,7 @@ export default function InsertHouse() {
           Betten: parseInt(formData.beds),
           Gästeanzahl: parseInt(formData.guestCount),
           Haustiere: formData.petsAllowed,
+          Rauchen: formData.smoking,
           Barrierefrei: formData.barrierFree,
           Parkmöglichkeiten: formData.parkingAvailable,
           Haus_Typ: formData.houseType,
@@ -191,6 +193,21 @@ export default function InsertHouse() {
             <label htmlFor="guestCount" className="block text-sm font-medium text-gray-700">Gästeanzahl</label>
             <input type="number" id="guestCount" name="guestCount" min="1" value={formData.guestCount} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
           </div>
+          {/* Bedrooms */}
+          <div>
+            <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700">Schlafzimmer</label>
+            <input type="number" id="bedrooms" name="bedrooms" min="1" value={formData.bedrooms} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* Bathrooms */}
+          <div>
+            <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700">Badezimmer</label>
+            <input type="number" id="bathrooms" name="bathrooms" min="1" value={formData.bathrooms} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
+          {/* Beds */}
+          <div>
+            <label htmlFor="beds" className="block text-sm font-medium text-gray-700">Betten</label>
+            <input type="number" id="beds" name="beds" min="1" value={formData.beds} onChange={handleChange} className="mt-1 p-2 block w-full border border-gray-300 rounded-md" required />
+          </div>
           {/* Pets Allowed */}
           <div>
             <label className="inline-flex items-center">
@@ -203,6 +220,13 @@ export default function InsertHouse() {
             <label className="inline-flex items-center">
               <input type="checkbox" name="barrierFree" checked={formData.barrierFree} onChange={handleChange} />
               <span className="ml-2">Barrierefrei</span>
+            </label>
+          </div>
+          {/* Smoking */}
+          <div>
+            <label className="inline-flex items-center">
+              <input type="checkbox" name="smoking" checked={formData.smoking} onChange={handleChange} />
+              <span className="ml-2">Rauchen</span>
             </label>
           </div>
           {/* Parking Available */}

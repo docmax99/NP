@@ -62,7 +62,7 @@ export default function Unterkunft() {
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center gap-4 p-2 bg-gray-100">
         {/* Haus Titel */}
-        <div className="text-4xl text-inherit">
+        <div className="text-4xl text-inherit font-bold">
           {house ? (
             <h1>{house?.Titel}</h1>
           ) : (
@@ -71,7 +71,7 @@ export default function Unterkunft() {
         </div>
 
         {/* Responsives 3x3 Grid Layout */}
-        <div className="grid grid-cols-4 grid-rows-[2fr_1fr] gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
+        <div className="grid grid-cols-4 grid-rows-[1fr_1fr] gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
           {/* Erstes Bild (nimmt 2 Spalten und 1 Reihe ein) */}
           <div className="col-span-2 row-span-1">
             <img
@@ -96,12 +96,6 @@ export default function Unterkunft() {
             />
           </div>
 
-          {/* Text */}
-          <div className="col-span-1 row-span-1">
-            <h1 className="text-lg font-bold">{house?.Titel}</h1>
-            <span className="text-base">{house?.Beschreibung}</span>
-          </div>
-
           {/* Drittes Bild */}
           <div className="col-span-2 row-span-1">
             <img
@@ -115,7 +109,7 @@ export default function Unterkunft() {
           </div>
 
           {/* Viertes Bild */}
-          <div className="col-span-1 row-span-1">
+          <div className="col-span-2 row-span-2">
             <img
               src={house?.bilder[3] ?? ''}
               layout="responsive"
@@ -124,6 +118,11 @@ export default function Unterkunft() {
               alt="Room 3 Hobbit"
               className="w-full h-full object-cover rounded-xl"
             />
+          </div>
+        {/* Text */}
+           <div className="col-span-4 row-span-1">
+          <h1 className="text-lg font-bold">{house?.Titel}</h1>
+          <span className="text-base">{house?.Beschreibung}</span>
           </div>
         </div>
 

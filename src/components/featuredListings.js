@@ -13,17 +13,18 @@ const FeaturedListings = ({ houses, scrollContainerRef }) => (
           key={index}
           className="group relative overflow-hidden rounded-3xl shadow-lg transform transition duration-700 hover:scale-105 hover:shadow-2xl min-w-[300px] max-w-sm snap-start"
         >
-          {/* Link ohne explizites <a> Tag */}
           <Link href={`/app/Unterkunft?id=${house.id}`}>
             <div>
-              <Image
-                src={house.Bild_3}
-                width={400}
-                height={300}
-                alt={house.Titel}
-                layout="responsive"
-                className="w-full h-64 object-cover rounded-3xl"
-              />
+            <div className="relative w-full h-64">
+          <Image
+            src={house?.bilder[0] ?? ''}
+            alt={house.Titel}
+            layout="fill"  // Bild wird den Container vollständig ausfüllen
+                   objectFit="cover"  // Das Bild behält sein Seitenverhältnis und schneidet bei Bedarf
+            className="rounded-3xl"
+          />
+        </div>
+
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
               <div className="absolute bottom-0 left-0 w-full p-4 text-white opacity-0 group-hover:opacity-100 transition duration-500">
                 <h2 className="text-xl font-bold">{house.Titel}</h2>

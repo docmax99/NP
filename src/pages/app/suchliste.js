@@ -115,7 +115,7 @@ export default function Suchliste() {
                 >
                   <a>
                     <img
-                      src={house.Bild_3} // Bild-URL aus den Daten
+                      src={house.bilder[0]} // Bild-URL aus den Daten
                       width={400}
                       height={300}
                       alt={house.Titel}
