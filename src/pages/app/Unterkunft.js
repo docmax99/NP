@@ -88,8 +88,8 @@ export default function Unterkunft() {
             <img
               src={house?.bilder[0] ?? ''} // Bild-URL aus den Daten oder Fallback-Bild
               layout="responsive"
-              width={500}
-              height={500}
+              width={900}
+              height={450}
               alt={house?.Titel}
               className="w-full h-full object-cover rounded-lg"
             />
@@ -100,15 +100,15 @@ export default function Unterkunft() {
             <img
               src={house?.bilder[1] ?? ''}
               layout="responsive"
-              width={500}
-              height={500}
+              width={900}
+              height={450}
               alt={house?.Titel}
               className="w-full h-full object-cover rounded-lg"
             />
           </div>
 
           {/* Drittes Bild */}
-          <div className="col-span-2 row-span-1">
+          <div className="col-span-2 row-span-2">
             <img
               src={house?.bilder[2] ?? ''}
               layout="responsive"
@@ -138,7 +138,7 @@ export default function Unterkunft() {
         </div>
 
         {/* Buchung und weitere Informationen */}
-        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[150vh]">
+        <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[110vh]">
           <div className="w-full">
             <ListingInfo house={house} />
             
