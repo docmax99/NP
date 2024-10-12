@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { getAllHouses } from '../../services/houseService';
 import { supabase } from '../../components/lib/supabaseClient';
+import Footer from '../../components/Footer';
 
 export default function Suchliste() {
   const router = useRouter();
@@ -141,22 +142,7 @@ export default function Suchliste() {
       </main>
 
       {/* Footer mit Links */}
-      <footer className="bg-black text-white p-4">
-        <nav className="space-x-4 text-center">
-          <Link href="/about" legacyBehavior>
-            <a className="hover:underline">Über uns</a>
-          </Link>
-          <Link href="/contact" legacyBehavior>
-            <a className="hover:underline">Kontakt</a>
-          </Link>
-          <Link href="/app/impressum" legacyBehavior>
-            <a className="hover:underline">Impressum</a>
-          </Link>
-          <Link href="/privacy" legacyBehavior>
-            <a className="hover:underline">Datenschutz</a>
-          </Link>
-        </nav>
-      </footer>
+      <Footer />
     </div>
   );
 }

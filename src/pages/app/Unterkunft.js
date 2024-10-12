@@ -11,6 +11,7 @@ import Header from '../../components/Header';
 import { supabase } from '../../components/lib/supabaseClient';
 import WeatherComponent from '../../components/WeatherComponent';
 import AddOns from '../../components/AddOns';
+import Footer from '../../components/Footer';
 
 
 
@@ -164,14 +165,7 @@ export default function Unterkunft() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-black text-white p-4">
-        <nav className="space-x-4 text-center">
-          <Link href="/about" className="hover:underline">Über uns</Link>
-          <Link href="/contact" className="hover:underline">Kontakt</Link>
-          <Link href="/app/impressum" className="hover:underline">Impressum</Link>
-          <Link href="/privacy" className="hover:underline">Datenschutz</Link>
-        </nav>
-      </footer>
+      <Footer />
 
       {/* Cookie Banner */}
       {showCookieBanner && (
