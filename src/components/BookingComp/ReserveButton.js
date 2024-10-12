@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../../components/lib/supabaseClient';
 import { format } from 'date-fns';
+import Confetti from 'react-confetti'; // Feuerwerk-Effekte
+import useSound from 'use-sound'; // Sound-Effekte (npm install use-sound)
 
 // Funktion zur Erstellung einer Buchung
 async function createBooking(houseId, checkIn, checkOut, guests, totalPrice) {
@@ -41,7 +43,6 @@ async function checkAvailability(houseId, checkIn, checkOut) {
     console.log('Check-in Datum:', formattedCheckIn);
     console.log('Check-out Datum:', formattedCheckOut);
 
-    // Abfrage zur Überprüfung der Verfügbarkeit
     const { data, error } = await supabase
       .from('Booking')
       .select('start_date, end_date')
@@ -53,7 +54,6 @@ async function checkAvailability(houseId, checkIn, checkOut) {
       return { success: false, error: error.message };
     }
 
-    // Überprüfen, ob es eine Überschneidung gibt
     const isConflict = data.some((booking) => {
       const existingStart = new Date(booking.start_date);
       const existingEnd = new Date(booking.end_date);
@@ -64,7 +64,6 @@ async function checkAvailability(houseId, checkIn, checkOut) {
       );
     });
 
-    // Wenn keine Konflikte vorhanden sind, ist das Haus verfügbar
     return { success: true, isAvailable: !isConflict };
   } catch (err) {
     console.error('Unbekannter Fehler bei der Verfügbarkeitsprüfung:', err);
@@ -74,13 +73,14 @@ async function checkAvailability(houseId, checkIn, checkOut) {
 
 export default function ReserveButton({ houseId, checkIn, checkOut, guests, totalPrice }) {
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // Popup-Status
+  const [play] = useSound('..//sounds//Confirmation.mp3'); // Sound laden (pfade zu deinem Sound)
   const router = useRouter();
 
   const handleReserve = async () => {
     try {
       setLoading(true);
 
-      // Überprüfe die Verfügbarkeit des Hauses
       const availabilityResponse = await checkAvailability(houseId, checkIn, checkOut);
 
       if (!availabilityResponse.success) {
@@ -95,7 +95,6 @@ export default function ReserveButton({ houseId, checkIn, checkOut, guests, tota
         return;
       }
 
-      // Buchung erstellen, wenn das Haus verfügbar ist
       const bookingResponse = await createBooking(houseId, checkIn, checkOut, guests, totalPrice);
 
       if (!bookingResponse.success) {
@@ -104,10 +103,14 @@ export default function ReserveButton({ houseId, checkIn, checkOut, guests, tota
         return;
       }
 
-      alert('Buchung erfolgreich!');
+      // Zeige Popup mit Feuerwerk und spiele Sound ab
+      setShowPopup(true);
+      play(); // Sound abspielen
 
-      // Leite den Benutzer zur Seite "/app/home" weiter
-      router.push('/app/home');
+      setTimeout(() => {
+        // Leite den Benutzer nach 5 Sekunden weiter
+        router.push('/app/home');
+      }, 5000);
     } catch (err) {
       console.error('Fehler bei der Buchung:', err);
       alert(`Fehler bei der Buchung: ${err.message}`);
@@ -117,12 +120,54 @@ export default function ReserveButton({ houseId, checkIn, checkOut, guests, tota
   };
 
   return (
-    <button
-      onClick={handleReserve}
-      className="bg-gradient-to-r from-blue-400 to-blue-900 text-white py-3 rounded-lg mb-4 font-semibold"
-      disabled={loading}
-    >
-      {loading ? 'Wird geladen...' : 'Reservieren'}
-    </button>
+    <>
+      {/* Button für die Buchung */}
+      <button
+        onClick={handleReserve}
+        className="bg-gradient-to-r from-blue-400 to-blue-900 text-white py-3 rounded-lg mb-4 font-semibold"
+        disabled={loading}
+      >
+        {loading ? 'Wird geladen...' : 'Reservieren'}
+      </button>
+
+      {/* Popup für die Bestätigung */}
+      {showPopup && (
+        
+        <div className="fixed inset-0 bg-gradient-to-r from-purple-600 via-blue-400 to-blue-600 bg-opacity-90 flex justify-center items-center z-50">
+        {/* Feuerwerk-Effekt */}
+        <Confetti width={window.innerWidth} height={window.innerHeight} />
+        <div className="relative bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md transform transition-transform duration-500 hover:scale-105 ease-in-out hover:shadow-2xl">
+          
+          {/* Glänzender Rand-Effekt */}
+          <div className="absolute inset-0 rounded-2xl border-4 border-transparent bg-gradient-to-r from-pink-400 to-purple-500 via-transparent animate-pulse opacity-70 pointer-events-none"></div>
+      
+          {/* Titel mit Animation */}
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-500 mb-6 animate-pulse">
+            Herzlichen Glückwunsch!
+          </h2>
+      
+          {/* Animierter Text */}
+          <p className="text-xl font-semibold text-gray-700 mb-4 animate-bounce glow-effect">
+            Hiermit bestätigen wir Ihre Buchung.
+          </p>
+      
+          
+      
+          {/* Button zur Bestätigung */}
+          <button className="mt-6 px-6 py-3 bg-gradient-to-r from-green-400 to-teal-500 text-white font-bold rounded-full shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 duration-300 ease-in-out">
+            Zurück zur Startseite
+          </button>
+        </div>
+      
+        {/* Stil für leuchtenden Text in Tailwind */}
+        <style jsx>{`
+          .glow-effect {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 0, 255, 0.4), 0 0 30px rgba(255, 0, 255, 0.6);
+          }
+        `}</style>
+      </div>
+      
+      )}
+    </>
   );
 }
