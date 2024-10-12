@@ -39,8 +39,8 @@
       reader.readAsDataURL(file);
       
       // Bild in Bucket uploaden und url an formData übergeben
-      const folderName = formData.User_Id;
-      const filePath = `${folderName}/${file.name}`;
+      const folderName = formData.User_Id; 
+      const filePath = `${formData.User_Id}Profilepic`; // Ersetzen des Dateinamens durch die UUID und Profilepic
       console.log(filePath)
       
       const {data, error } = await supabase.storage.from('Users').upload(filePath, file);
