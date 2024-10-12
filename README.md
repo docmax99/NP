@@ -74,7 +74,7 @@ Dieses Projekt hat uns tiefere Einblicke in die Entwicklung mit **Frontend- und 
 
 Bei Fragen oder Anmerkungen kannst du uns gerne kontaktieren:
 
-- **Eric Uphoff**: [mailto:konrad@preiser.de](mailto:konrad@preiser.de)
+- **Eric Uphoff**: [mailto:s232658@student.dhbw.mannheim.de](mailto:s232658@student.dhbw.mannheim.de)
 - **Louis Schneider**
 
 ---
