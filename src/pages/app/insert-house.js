@@ -25,6 +25,7 @@ export default function InsertHouse() {
     smoking: false,
     barrierFree: false,
     parkingAvailable: false,
+    URL: '',
   });
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -105,6 +106,7 @@ export default function InsertHouse() {
           Parkmöglichkeiten: formData.parkingAvailable,
           Haus_Typ: formData.houseType,
           userId: userId, // Save fixed user ID
+          URL: formData.URL,
           bilder: houseImageUrls, // Speichere die öffentliche URL des Bildes
         }]);
 

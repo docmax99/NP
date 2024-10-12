@@ -42,7 +42,7 @@ export default function ListingInfo({house}) {
       <div className="flex items-center mb-6">
         <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
           <Image
-            src="/Images/PersonalPic/FordoBild.png" // Füge hier das richtige Bild hinzu
+            src="/Images/PersonalPic/FordoBild.png" // Host-Bild
             width={48}
             height={48}
             alt="Host"
