@@ -8,57 +8,57 @@ import Footer from '../../components/Footer';
 
 export default function Suchliste() {
   const router = useRouter();
-  const { query } = router;
-  const [houses, setHouses] = useState([]);
-  const [filteredHouses, setFilteredHouses] = useState([]);
+  const { query } = router; // Extract query parameters from the URL
+  const [houses, setHouses] = useState([]); // State to store all houses
+  const [filteredHouses, setFilteredHouses] = useState([]); // State to store filtered houses
 
-  // Häuserdaten aus der Datenbank abrufen und im State speichern
+  // Fetch house data from the database and store it in the state
   useEffect(() => {
     const fetchHouses = async () => {
       try {
-        const houseData = await getAllHouses(); // Abruf der Daten aus der Datenbank
-        setHouses(houseData); // Speichern der abgerufenen Daten im State
+        const houseData = await getAllHouses(); // Fetch data from the database
+        setHouses(houseData); // Store fetched data in the state
         console.log('House data:', houseData);
       } catch (error) {
-        console.error('Fehler beim Abrufen der Häuserdaten:', error);
+        console.error('Error fetching house data:', error);
       }
     };
 
     fetchHouses();
   }, []);
 
-  // Filtert die Häuserliste basierend auf den Suchkriterien
+  // Filter the house list based on search criteria
   useEffect(() => {
     const filterHouses = async () => {
       if (query.destination && query.arrivalDate && query.departureDate && query.guests) {
-        // Zuerst filtern wir nach Land (Groß- und Kleinschreibung ignorieren)
+        // First, filter by country (case insensitive)
         let filtered = houses.filter(
           (house) => house.Land.toLowerCase() === query.destination.toLowerCase()
         );
   
-        // Filtern nach Häusern, die in dem angegebenen Zeitraum frei sind
+        // Filter houses that are available in the specified date range
         const availableHouses = await getAvailableHousesInDateRange(
           query.arrivalDate,
           query.departureDate
         );
   
-        // Überprüfen, ob das Haus nicht in der Liste der gebuchten Häuser ist
+        // Check if the house is not in the list of booked houses
         filtered = filtered.filter((house) =>
           availableHouses.some((availableHouse) => availableHouse.id === house.id)
         );
   
-        // Filtern nach der Anzahl der Gäste (Kapazität des Hauses muss >= Gästeanzahl sein)
+        // Filter by the number of guests (house capacity must be >= number of guests)
         filtered = filtered.filter((house) => house.Gästeanzahl >= parseInt(query.guests));
   
         setFilteredHouses(filtered);
       } else if (query.destination) {
-        // Wenn nur `destination` angegeben ist, filtern wir nur nach dem Land (Groß- und Kleinschreibung ignorieren)
+        // If only `destination` is specified, filter by country (case insensitive)
         const filtered = houses.filter(
           (house) => house.Land.toLowerCase() === query.destination.toLowerCase()
         );
         setFilteredHouses(filtered);
       } else {
-        // Wenn kein `destination` angegeben ist, werden alle Häuser angezeigt
+        // If no `destination` is specified, display all houses
         setFilteredHouses(houses);
       }
     };
@@ -67,38 +67,38 @@ export default function Suchliste() {
   }, [houses, query]);
   
 
-  // Funktion zur Abfrage der Häuser, die im angegebenen Zeitraum verfügbar sind
+  // Function to query houses that are available in the specified date range
   const getAvailableHousesInDateRange = async (arrivalDate, departureDate) => {
     try {
-      // Abfrage in Supabase, um alle Buchungen zu erhalten, die mit dem Zeitraum kollidieren
+      // Query Supabase to get all bookings that collide with the date range
       const { data, error } = await supabase
         .from('Booking')
         .select('hausId, start_date, end_date')
         .or(`and(start_date.lte.${departureDate},end_date.gte.${arrivalDate})`);
 
       if (error) {
-        console.error('Fehler beim Abrufen der Verfügbarkeiten:', error);
+        console.error('Error fetching availability:', error);
         return [];
       }
 
-      // Gebuchte Haus-IDs sammeln
+      // Collect booked house IDs
       const bookedHouseIds = data.map((booking) => booking.hausId);
 
-      // Häuser filtern, die nicht gebucht sind
+      // Filter houses that are not booked
       return houses.filter((house) => !bookedHouseIds.includes(house.id));
     } catch (error) {
-      console.error('Fehler bei der Abfrage der verfügbaren Häuser:', error);
+      console.error('Error querying available houses:', error);
       return [];
     }
   };
 
   return (
     <div className="flex flex-col gap-8 bg-gray-100 min-h-screen">
-     <Header />
+      <Header />
       {/* Main Content */}
       <main className="flex flex-col items-center gap-8 p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {/* Dynamische Anzeige aller gefilterten Häuser aus der Datenbank */}
+          {/* Dynamically display all filtered houses from the database */}
           {filteredHouses.length > 0 ? (
             filteredHouses.map((house) => (
               <div
@@ -119,7 +119,7 @@ export default function Suchliste() {
                 >
                   <a>
                     <img
-                      src={house.bilder[0]} // Bild-URL aus den Daten
+                      src={house.bilder[0]} // Image URL from the data
                       width={400}
                       height={300}
                       alt={house.Titel}
@@ -131,15 +131,15 @@ export default function Suchliste() {
               </div>
             ))
           ) : (
-            <p>Keine Häuser Gefunden.</p> // Falls keine Häuser in der Datenbank sind, wird dieser Text angezeigt
+            <p>No houses found.</p> // Display this text if no houses are found in the database
           )}
         </div>
 
-        {/* Zusätzliche Informationen basierend auf den Query-Parametern */}
+        {/* Additional information based on query parameters */}
       
       </main>
 
-      {/* Footer mit Links */}
+      {/* Footer with links */}
       <Footer />
     </div>
   );

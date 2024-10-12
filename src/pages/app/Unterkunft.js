@@ -9,24 +9,22 @@ import WeatherComponent from '../../components/WeatherComponent';
 import AddOns from '../../components/AddOns';
 import Footer from '../../components/Footer';
 
-
-
-
 export default function Unterkunft() {
-  const [showCookieBanner, setShowCookieBanner] = useState(true);
-  const [house, setHouse] = useState(null);
-  const [user, setUser] = useState(null); // Zustand für Benutzer hinzufügen
-  const [addOnPrice, setAddOnPrice] = useState(0); // Zustand für den Preis der Add-Ons
+  // State variables
+  const [showCookieBanner, setShowCookieBanner] = useState(true); // State for showing cookie banner
+  const [house, setHouse] = useState(null); // State for house data
+  const [user, setUser] = useState(null); // State for user data
+  const [addOnPrice, setAddOnPrice] = useState(0); // State for add-on price
   const router = useRouter();
   const { query } = router;
 
-  // houseId wird aus den Query-Parametern abgerufen
+  // Get houseId from query parameters
   const houseId = query.id;
-  const mapsDBLink = house ? house.URL : ""; // Link zur Google Maps-Seite des Hauses
-  const Ort = house ? house.Ort : ""; // Ort des Hauses
+  const mapsDBLink = house ? house.URL : ""; // Google Maps link for the house
+  const Ort = house ? house.Ort : ""; // Location of the house
 
   useEffect(() => {
-    // Überprüfen, ob ein Benutzer eingeloggt ist
+    // Fetch user data if logged in
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
@@ -34,18 +32,18 @@ export default function Unterkunft() {
 
     fetchUser();
 
-    // Nur abrufen, wenn die houseId vorhanden ist
+    // Fetch house data if houseId is available
     if (houseId) {
       const fetchHouse = async () => {
         try {
           const { data, error } = await supabase
-        .from('Houses')
-        .select('*')
-        .eq('id', houseId)
+            .from('Houses')
+            .select('*')
+            .eq('id', houseId);
 
-        if (error)console.error('Fehler beim Abrufen des Hauses:', error);
+          if (error) console.error('Fehler beim Abrufen des Hauses:', error);
 
-        const selectedHouse = data[0];
+          const selectedHouse = data[0];
           setHouse(selectedHouse);
           console.log("Ausgewähltes Haus:", selectedHouse);
         } catch (error) {
@@ -55,9 +53,9 @@ export default function Unterkunft() {
 
       fetchHouse();
     }
-  }, [houseId]); // useEffect wird erneut ausgeführt, wenn houseId geändert wird
+  }, [houseId]); // Re-run useEffect when houseId changes
 
-  // Zustand für den Preis der Add-Ons
+  // Handle add-on price change
   const handleAddOnPriceChange = (price) => {
     setAddOnPrice(price);
   };
@@ -69,7 +67,7 @@ export default function Unterkunft() {
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center gap-4 p-2 bg-gray-100">
-        {/* Haus Titel */}
+        {/* House Title */}
         <div className="text-4xl text-inherit font-bold">
           {house ? (
             <h1>{house?.Titel}</h1>
@@ -78,12 +76,12 @@ export default function Unterkunft() {
           )}
         </div>
 
-        {/* Responsives 3x3 Grid Layout */}
+        {/* Responsive 3x3 Grid Layout */}
         <div className="grid grid-cols-4 grid-rows-[1fr_1fr] gap-2 w-full max-w-6xl bg-white shadow-lg rounded-xl p-4">
-          {/* Erstes Bild (nimmt 2 Spalten und 1 Reihe ein) */}
+          {/* First Image (spans 2 columns and 1 row) */}
           <div className="col-span-2 row-span-1">
             <img
-              src={house?.bilder[0] ?? ''} // Bild-URL aus den Daten oder Fallback-Bild
+              src={house?.bilder[0] ?? ''} // Image URL from data or fallback image
               layout="responsive"
               width={900}
               height={450}
@@ -92,7 +90,7 @@ export default function Unterkunft() {
             />
           </div>
 
-          {/* Zweites Bild */}
+          {/* Second Image */}
           <div className="col-span-2 row-span-1">
             <img
               src={house?.bilder[1] ?? ''}
@@ -104,7 +102,7 @@ export default function Unterkunft() {
             />
           </div>
 
-          {/* Drittes Bild */}
+          {/* Third Image */}
           <div className="col-span-2 row-span-2">
             <img
               src={house?.bilder[2] ?? ''}
@@ -116,7 +114,7 @@ export default function Unterkunft() {
             />
           </div>
 
-          {/* Viertes Bild */}
+          {/* Fourth Image */}
           <div className="col-span-2 row-span-2">
             <img
               src={house?.bilder[3] ?? ''}
@@ -127,37 +125,34 @@ export default function Unterkunft() {
               className="w-full h-full object-cover rounded-xl"
             />
           </div>
-        {/* Text */}
-           <div className="col-span-4 row-span-1">
-          <h1 className="text-lg font-bold">{house?.Titel}</h1>
-          <span className="text-base">{house?.Beschreibung}</span>
+
+          {/* Text */}
+          <div className="col-span-4 row-span-1">
+            <h1 className="text-lg font-bold">{house?.Titel}</h1>
+            <span className="text-base">{house?.Beschreibung}</span>
           </div>
         </div>
 
-        {/* Buchung und weitere Informationen */}
+        {/* Booking and Additional Information */}
         <div className="bg-gray-100 grid grid-cols-2 grid-rows-1 w-full max-w-6xl shadow-2xl rounded-xl gap-4 p-4 h-[110vh]">
           <div className="w-full">
             <ListingInfo house={house} />
-            
           </div>
           <div className="w-full">
-            <BookingCard house={house} Ankuft={query.arrivalDate} Abgang={query.departureDate} GästeZahl={query.guests} addOnPrice={addOnPrice}/>
-          </div> 
-          
-             
-        </div>
-          
-          {/* Hier fügen wir die AddOns-Komponente ein */}
-          <div className="w-full max-w-6xl mt-4">
-            <AddOns onPriceChange={handleAddOnPriceChange} />
+            <BookingCard house={house} Ankuft={query.arrivalDate} Abgang={query.departureDate} GästeZahl={query.guests} addOnPrice={addOnPrice} />
           </div>
-          <div className="w-full max-w-6xl mt-4 p-6 bg-white rounded-lg shadow-2xl">
+        </div>
+
+        {/* Add-Ons Component */}
+        <div className="w-full max-w-6xl mt-4">
+          <AddOns onPriceChange={handleAddOnPriceChange} />
+        </div>
+
+        {/* Weather and Map Components */}
+        <div className="w-full max-w-6xl mt-4 p-6 bg-white rounded-lg shadow-2xl">
           <WeatherComponent Ort={Ort} />
           <MapEmbed mapsLink={mapsDBLink} />
-          </div>
-
-        
-        
+        </div>
       </main>
 
       {/* Footer */}

@@ -99,7 +99,10 @@ export default function Dropdown() {
 
   // If logged in, add "Haus erstellen" option
   if (isLoggedIn) {
-    menuItems.unshift({ href: '/app/insert-house', label: 'Haus inserieren' });
+    menuItems.unshift(
+      { href: '/app/insert-house', label: 'Haus inserieren' },
+      { href: '/app/profile', label: 'Profil' }, // Profil Option hinzufügen
+    );
   }
 
   return (
