@@ -1,7 +1,6 @@
   import { useState } from 'react';
   import { useRouter } from 'next/router';
   import { supabase } from '../../components/lib/supabaseClient';
-  import ImageUpload from '../../components/ImageUpload';
   import BackButton from '../../components/BackButton'; // BackButton-Komponente importieren
 
 

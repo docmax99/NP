@@ -1,10 +1,6 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import Dropdown from '../../components/Dropdown';
 import { useState, useEffect } from 'react';
 import BookingCard from '../../components/BookingCard';
 import ListingInfo from '../../components/ListingInfos';
-import { getAllHouses } from '../../services/houseService';
 import { useRouter } from 'next/router';
 import MapEmbed from '../../components/MapEmbed';
 import Header from '../../components/Header';

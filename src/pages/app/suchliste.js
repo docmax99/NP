@@ -1,6 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
-import Dropdown from '../../components/Dropdown';
 import Header from '../../components/Header';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';

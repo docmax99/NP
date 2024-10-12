@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { supabase } from '../../components/lib/supabaseClient';
 import { useRouter } from 'next/router';
 import { getAllHouses } from "../../services/houseService";
 import Header from '../../components/Header';
