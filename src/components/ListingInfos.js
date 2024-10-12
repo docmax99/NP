@@ -1,5 +1,6 @@
 
 import Image from 'next/image';
+import React, { useState, useEffect } from 'react';
 
 export default function ListingInfo({house}) {
   const Badezimmer = house ? house.Badezimmer : 0; 
@@ -8,6 +9,19 @@ export default function ListingInfo({house}) {
   const Gästeanzahl = house ? house.Gästeanzahl : 0;
   const Bewertung = house ? house.Bewertungen_int : 0;
   const Titel_long = house ? house.Titel_long : 'Unbekanntes Haus';
+
+  
+    const [randomNumber, setRandomNumber] = useState(4.98);
+  
+    useEffect(() => {
+      // Array mit 7 möglichen Zahlen
+      const possibleNumbers = [4.98, 3.87, 5.12, 4.65, 4.33, 4.89, 5.00];
+  
+      // Zufällig eine Zahl aus dem Array auswählen
+      const randomIndex = Math.floor(Math.random() * possibleNumbers.length);
+      setRandomNumber(possibleNumbers[randomIndex]);
+    }, []);
+  
   
 
 
@@ -26,15 +40,15 @@ export default function ListingInfo({house}) {
       <div className="flex justify-around items-center border rounded-lg p-4 mb-6">
         <div className="text-center">
           <span className="text-xl">🏆</span>
-          <p className="font-semibold">Guest favorite</p>
+          <p className="font-semibold">Gäste Liebling</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold">4.98</p>
+          <p className="text-2xl font-bold">{randomNumber}</p>
           <p className="text-sm">★★★★★</p>
         </div>
         <div className="text-center">
           <span className="text-2xl font-bold"> {`${Bewertung}`} </span>
-          <p className="text-sm underline">Reviews</p>
+          <p className="text-sm underline">Bewertungen</p>
         </div>
       </div>
 
@@ -50,8 +64,8 @@ export default function ListingInfo({house}) {
           />
         </div>
         <div>
-          <p className="font-semibold">Hosted by Frodo</p>
-          <p className="text-gray-600">Superhost · 14 years hosting</p>
+          <p className="font-semibold">Vermietet von Frodo</p>
+          <p className="text-gray-600">Superhost · 14 Jahre Vermieter</p>
         </div>
       </div>
 
@@ -60,24 +74,24 @@ export default function ListingInfo({house}) {
         <div className="flex items-center">
           <span className="text-xl mr-4">🏅</span>
           <div>
-            <p className="font-semibold">Top 10% of homes</p>
-            <p className="text-gray-600">This home is highly ranked based on ratings, reviews, and reliability.</p>
+            <p className="font-semibold">Die besten 10% der Wohnungen</p>
+            <p className="text-gray-600">Dieses Heim wird aufgrund von Bewertungen, Rezensionen und Zuverlässigkeit hoch bewertet.</p>
           </div>
         </div>
 
         <div className="flex items-center">
           <span className="text-xl mr-4">🔑</span>
           <div>
-            <p className="font-semibold">Self check-in</p>
-            <p className="text-gray-600">Check yourself in with the keypad.</p>
+            <p className="font-semibold">Selbst einchecken möglich</p>
+            <p className="text-gray-600">Melden Sie sich mit dem Tastenfeld an.</p>
           </div>
         </div>
 
         <div className="flex items-center">
           <span className="text-xl mr-4">📅</span>
           <div>
-            <p className="font-semibold">Free cancellation for 48 hours</p>
-            <p className="text-gray-600">Get a full refund if you change your mind.</p>
+            <p className="font-semibold">Kostenlose Stornierung innerhalb von 48 Stunden</p>
+            <p className="text-gray-600">Sie erhalten eine volle Rückerstattung, wenn Sie Ihre Meinung ändern.</p>
           </div>
         </div>
       </div>
