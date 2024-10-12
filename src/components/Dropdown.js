@@ -3,8 +3,12 @@ import { FiMoreVertical } from 'react-icons/fi';
 import { supabase } from './lib/supabaseClient';
 
 export default function Dropdown() {
+  // State to manage dropdown open/close status
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Zustand für Login-Status
+  // State to manage user login status
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // Refs for dropdown, button, and first menu item
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
   const firstMenuItemRef = useRef(null);
@@ -13,7 +17,7 @@ export default function Dropdown() {
   useEffect(() => {
     const checkUserSession = async () => {
       const { data: sessionData } = await supabase.auth.getSession();
-      setIsLoggedIn(!!sessionData.session); // Setzt den Zustand basierend auf der Session
+      setIsLoggedIn(!!sessionData.session); // Set login status based on session
     };
     checkUserSession();
   }, []);
@@ -87,12 +91,13 @@ export default function Dropdown() {
     }
   };
 
+  // Menu items
   const menuItems = [
     { href: '/app/register', label: 'Registrieren' },
     { href: '#', label: 'Hilfe' },
   ];
 
-  // Falls eingeloggt, füge die Option "Haus erstellen" hinzu
+  // If logged in, add "Haus erstellen" option
   if (isLoggedIn) {
     menuItems.unshift({ href: '/app/insert-house', label: 'Haus inserieren' });
   }
