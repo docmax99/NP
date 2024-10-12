@@ -32,36 +32,41 @@ export default function Suchliste() {
   useEffect(() => {
     const filterHouses = async () => {
       if (query.destination && query.arrivalDate && query.departureDate && query.guests) {
-        // Zuerst filtern wir nach Land
-        let filtered = houses.filter((house) => house.Land === query.destination);
-
+        // Zuerst filtern wir nach Land (Groß- und Kleinschreibung ignorieren)
+        let filtered = houses.filter(
+          (house) => house.Land.toLowerCase() === query.destination.toLowerCase()
+        );
+  
         // Filtern nach Häusern, die in dem angegebenen Zeitraum frei sind
         const availableHouses = await getAvailableHousesInDateRange(
           query.arrivalDate,
           query.departureDate
         );
-
+  
         // Überprüfen, ob das Haus nicht in der Liste der gebuchten Häuser ist
         filtered = filtered.filter((house) =>
           availableHouses.some((availableHouse) => availableHouse.id === house.id)
         );
-
+  
         // Filtern nach der Anzahl der Gäste (Kapazität des Hauses muss >= Gästeanzahl sein)
         filtered = filtered.filter((house) => house.Gästeanzahl >= parseInt(query.guests));
-
+  
         setFilteredHouses(filtered);
       } else if (query.destination) {
-        // Wenn nur `destination` angegeben ist, filtern wir nur nach dem Land
-        const filtered = houses.filter((house) => house.Land === query.destination);
+        // Wenn nur `destination` angegeben ist, filtern wir nur nach dem Land (Groß- und Kleinschreibung ignorieren)
+        const filtered = houses.filter(
+          (house) => house.Land.toLowerCase() === query.destination.toLowerCase()
+        );
         setFilteredHouses(filtered);
       } else {
         // Wenn kein `destination` angegeben ist, werden alle Häuser angezeigt
         setFilteredHouses(houses);
       }
     };
-
+  
     filterHouses();
   }, [houses, query]);
+  
 
   // Funktion zur Abfrage der Häuser, die im angegebenen Zeitraum verfügbar sind
   const getAvailableHousesInDateRange = async (arrivalDate, departureDate) => {
@@ -132,22 +137,7 @@ export default function Suchliste() {
         </div>
 
         {/* Zusätzliche Informationen basierend auf den Query-Parametern */}
-        <div style={{ padding: '20px' }}>
-          <ul>
-            <li>
-              <strong>Reiseziel:</strong> {query.destination || '(empty)'}
-            </li>
-            <li>
-              <strong>Anreise:</strong> {query.arrivalDate || '(empty)'}
-            </li>
-            <li>
-              <strong>Abreise:</strong> {query.departureDate || '(empty)'}
-            </li>
-            <li>
-              <strong>Anzahl der Gäste:</strong> {query.guests || '(empty)'}
-            </li>
-          </ul>
-        </div>
+      
       </main>
 
       {/* Footer mit Links */}
