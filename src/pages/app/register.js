@@ -3,11 +3,10 @@
   import { supabase } from '../../components/lib/supabaseClient';
   import BackButton from '../../components/BackButton'; // BackButton-Komponente importieren
 
-
   export default function Register() {
     const router = useRouter();
     const [formData, setFormData] = useState({
-      User_Id: crypto.randomUUID(),
+      User_Id: crypto.randomUUID(), // Generiere eine eindeutige Benutzer-ID
       First_Name: '',
       Last_Name: '',
       Email: '',
@@ -18,10 +17,11 @@
       Ort: '',
       Land: 'DE', // Standardwert auf 'DE' gesetzt
     });
-    const [profileImagePreview, setProfileImagePreview] = useState(null);
-    const [error, setError] = useState('');
-    const [profileImagePath, setProfileImagePath] = useState(null);
+    const [profileImagePreview, setProfileImagePreview] = useState(null); // Zustand für die Bildvorschau
+    const [error, setError] = useState(''); // Zustand für Fehlermeldungen
+    const [profileImagePath, setProfileImagePath] = useState(null); // Zustand für den Bildpfad
 
+    // Funktion zum Aktualisieren der Formulardaten
     const handleChange = (e) => {
       setFormData({
         ...formData,
@@ -29,6 +29,7 @@
       });
     };
 
+    // Funktion zum Hochladen des Profilbildes
     const handleImageUpload = async (file) => {
       // Vorschau des Bildes setzen
       const reader = new FileReader();
@@ -49,10 +50,11 @@
         return;
       }
 
-      setProfileImagePath(data.path);
+      setProfileImagePath(data.path); // Bildpfad setzen
       console.log(data.path)
     };
 
+    // Funktion zur Registrierung des Benutzers
     const handleRegister = async (e) => {
       e.preventDefault();
 

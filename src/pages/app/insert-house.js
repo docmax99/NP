@@ -3,11 +3,12 @@ import { useRouter } from 'next/router';
 import { supabase } from '../../components/lib/supabaseClient';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import MathPopup from '../../components/MathPopup'; // Importiere MathPopup
+import MathPopup from '../../components/MathPopup'; // Import MathPopup component
 
 export default function InsertHouse() {
+  // Initialize form data state with default values
   const [formData, setFormData] = useState({
-    id: crypto.randomUUID(),
+    id: crypto.randomUUID(), // Generate a unique ID for the house
     title: '',
     description: '',
     street: '',
@@ -28,15 +29,16 @@ export default function InsertHouse() {
     URL: '',
   });
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showMathPopup, setShowMathPopup] = useState(false); // Steuert, ob das MathPopup angezeigt wird
-  const [houseData, setHouseData] = useState(null); // Speichert die hochgeladenen Daten für die spätere Weiterleitung
-  const [houseImageUrls, setHouseImageUrls] = useState([]); // Speichert die öffentliche URL des Bildes
-  const [uploadedFiles, setUploadedFiles] = useState([]); // Speichert die hochgeladenen Dateien
+  const [errorMessage, setErrorMessage] = useState(''); // State to store error messages
+  const [loading, setLoading] = useState(false); // State to manage loading state
+  const [showMathPopup, setShowMathPopup] = useState(false); // State to control MathPopup visibility
+  const [houseData, setHouseData] = useState(null); // State to store uploaded house data
+  const [houseImageUrls, setHouseImageUrls] = useState([]); // State to store public URLs of uploaded images
+  const [uploadedFiles, setUploadedFiles] = useState([]); // State to store uploaded files
   const router = useRouter();
-  const userId = '3871b652-ab49-4eea-9a9f-a6db4be01ded'; // Feste User-ID
+  const userId = '3871b652-ab49-4eea-9a9f-a6db4be01ded'; // Fixed user ID
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -45,10 +47,9 @@ export default function InsertHouse() {
     });
   };
 
+  // Handle image upload to Supabase storage
   const handleImageUpload = async (file) => {
-
-    // Bild in Supabase Bucket hochladen
-    const folderName = formData.id; // ID als Ordnername nutzen
+    const folderName = formData.id; // Use house ID as folder name
     const filePath = `${folderName}/${file.name}`;
     
     const { data, error } = await supabase.storage.from('Houses').upload(filePath, file);
@@ -59,7 +60,7 @@ export default function InsertHouse() {
     }
     console.log('Bild hochgeladen:', data.fullPath);
 
-    // Öffentliche URL des Bildes holen
+    // Get public URL of the uploaded image
     const { data: publicData, error: publicError } = supabase
       .storage
       .from('Houses')
@@ -73,9 +74,10 @@ export default function InsertHouse() {
 
     console.log('Öffentliche URL:', publicData.publicUrl);
 
-    setHouseImageUrls((existingUrls) => [...existingUrls, publicData.publicUrl]); // Speichere die öffentliche URL des Bildes
+    setHouseImageUrls((existingUrls) => [...existingUrls, publicData.publicUrl]); // Store public URL of the image
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -107,7 +109,7 @@ export default function InsertHouse() {
           Haus_Typ: formData.houseType,
           userId: userId, // Save fixed user ID
           URL: formData.URL,
-          bilder: houseImageUrls, // Speichere die öffentliche URL des Bildes
+          bilder: houseImageUrls, // Store public URLs of the images
         }]);
 
       if (error) {
@@ -115,9 +117,9 @@ export default function InsertHouse() {
         throw new Error(`Error inserting house: ${error.message}`);
       }
 
-      // Speichere die hochgeladenen Hausdaten
+      // Store uploaded house data
       setHouseData(data);
-      // Zeige MathPopup nach dem erfolgreichen Upload
+      // Show MathPopup after successful upload
       setShowMathPopup(true);
     } catch (error) {
       console.error('Error during house insertion:', error);
@@ -127,6 +129,7 @@ export default function InsertHouse() {
     }
   };
 
+  // Handle MathPopup close event
   const handleMathPopupClose = (isCorrect) => {
     if (!isCorrect) {
       setErrorMessage('Die Matheaufgabe wurde nicht korrekt gelöst.');
@@ -134,7 +137,7 @@ export default function InsertHouse() {
     }
     setShowMathPopup(false);
     if (houseData) {
-      router.push('/app/home');
+      router.push('/app/home'); // Redirect to home page after successful submission
     }
   };
 
@@ -282,7 +285,7 @@ export default function InsertHouse() {
         </form>
       </main>
       <Footer />
-      {/* MathPopup anzeigen, wenn erforderlich */}
+      {/* Show MathPopup if required */}
       {showMathPopup && <MathPopup onClose={handleMathPopupClose} />}
     </div>
   );

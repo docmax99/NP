@@ -8,9 +8,16 @@ import Footer from '../../components/Footer';
 import CookieBanner from '../../components/CookieBanner';
 
 export default function Home() {
-  const [houses, setHouses] = useState([]);  // Zustand für die Liste der Häuser
-  const scrollContainerRef = useRef(null);  // Referenz für das Scroll-Container-Element
+  // State to store the list of houses
+  const [houses, setHouses] = useState([]);
+  
+  // Reference for the scroll container element
+  const scrollContainerRef = useRef(null);
+  
+  // Router instance from Next.js for navigation
   const router = useRouter();
+  
+  // State to store the input data from the search bar
   const [inputData, setInputData] = useState({
     destination: '',
     arrivalDate: '',
@@ -18,10 +25,12 @@ export default function Home() {
     guests: '',
   });
 
+  // Handler for input changes in the search bar
   const handleChange = useCallback((e) => {
     setInputData({ ...inputData, [e.target.name]: e.target.value });
   }, [inputData]);
 
+  // Handler for the search button click
   const handleSearch = useCallback(() => {
     router.push({
       pathname: '/app/suchliste',
@@ -29,7 +38,7 @@ export default function Home() {
     });
   }, [inputData, router]);
 
-  // Funktion zum Abrufen der Häuser
+  // Fetch the list of houses when the component mounts
   useEffect(() => {
     const fetchHouses = async () => {
       try {
@@ -43,7 +52,7 @@ export default function Home() {
     fetchHouses();
   }, []);
 
-  // Automatischer Bildlauf in der Featured Listings Sektion
+  // Automatic scrolling in the Featured Listings section
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
 
@@ -63,11 +72,13 @@ export default function Home() {
       {/* Header */}
       <Header />
 
-      {/* Hauptinhalt mit Suchleiste und Featured Listings */}
+      {/* Main content with search bar and featured listings */}
       <main className="flex-grow flex flex-col items-center gap-16 py-24 px-10 bg-gradient-to-b from-white to-gray-50">
         <SearchBar inputData={inputData} handleChange={handleChange} handleSearch={handleSearch} />
         <FeaturedListings houses={houses} scrollContainerRef={scrollContainerRef} />
       </main>
+      
+      {/* Cookie Banner */}
       <CookieBanner />
 
       {/* Footer */}
