@@ -1,27 +1,31 @@
-// pages/confirmation.js
+// Importiere notwendige Hooks und Funktionen aus React und Next.js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-
+// Definiere die Confirmation-Komponente als Standardexport
 export default function Confirmation() {
+  // Initialisiere den Router-Hook von Next.js
   const router = useRouter();
-  const [countdown, setCountdown] = useState(5); // Timer startet bei 5 Sekunden
+  // Initialisiere den Countdown-State mit 5 Sekunden
+  const [countdown, setCountdown] = useState(5);
 
-  // Reduziere den Timer jede Sekunde
+  // useEffect-Hook, der bei jeder Änderung des Countdown-States ausgeführt wird
   useEffect(() => {
+    // Setze ein Intervall, das jede Sekunde den Countdown um 1 reduziert
     const timer = setInterval(() => {
       setCountdown(prev => prev - 1);
     }, 1000);
 
-    // Weiterleitung zur Login-Seite nach 5 Sekunden
+    // Wenn der Countdown 0 erreicht, leite zur Startseite weiter
     if (countdown === 0) {
       router.push('/app/home');
     }
 
     // Bereinige das Intervall, wenn die Komponente unmountet
     return () => clearInterval(timer);
-  }, [countdown, router]);
+  }, [countdown, router]); // Abhängigkeiten: countdown und router
 
+  // Render-Methode der Komponente
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-yellow-50">
       <h1 className="text-4xl font-bold text-gray-800 mb-4">🎉 Erfolgreich registriert! 🎉</h1>

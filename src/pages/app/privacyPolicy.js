@@ -1,10 +1,14 @@
 import React from 'react';
 
+// Define a functional component named PrivacyPolicy
 const PrivacyPolicy = () => {
   return (
+    // Main container with styling for max width, margin, padding, background color, shadow, and rounded corners
     <div className="max-w-4xl mx-auto p-10 bg-gray-50 shadow-lg rounded-lg">
+      {/* Main heading for the privacy policy */}
       <h1 className="text-4xl font-bold text-gray-800 border-b-4 border-gray-300 pb-4">Datenschutzerklärung</h1>
 
+      {/* Section explaining the importance of privacy */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Deine Privatsphäre ist uns wichtig</h2>
         <p className="text-lg text-gray-600">
@@ -12,6 +16,7 @@ const PrivacyPolicy = () => {
         </p>
       </section>
 
+      {/* Section detailing the types of data collected */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Welche Daten wir erfassen</h2>
         <p className="text-lg text-gray-600">
@@ -24,6 +29,7 @@ const PrivacyPolicy = () => {
         </p>
       </section>
 
+      {/* Section explaining how the collected data is used */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Wie wir deine Daten verwenden</h2>
         <p className="text-lg text-gray-600">
@@ -36,6 +42,7 @@ const PrivacyPolicy = () => {
         </p>
       </section>
 
+      {/* Section on data sharing policies */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Weitergabe deiner Daten</h2>
         <p className="text-lg text-gray-600">
@@ -49,6 +56,7 @@ const PrivacyPolicy = () => {
         </p>
       </section>
 
+      {/* Section outlining user rights under GDPR */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Deine Rechte gemäß DSGVO</h2>
         <p className="text-lg text-gray-600">
@@ -65,6 +73,7 @@ const PrivacyPolicy = () => {
         </p>
       </section>
 
+      {/* Section on data security measures */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Datensicherheit</h2>
         <p className="text-lg text-gray-600">
@@ -72,6 +81,7 @@ const PrivacyPolicy = () => {
         </p>
       </section>
 
+      {/* Section on the use of cookies */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Cookies</h2>
         <p className="text-lg text-gray-600">
@@ -79,6 +89,7 @@ const PrivacyPolicy = () => {
         </p>
       </section>
 
+      {/* Section on changes to the privacy policy */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Änderungen dieser Datenschutzerklärung</h2>
         <p className="text-lg text-gray-600">
@@ -86,6 +97,7 @@ const PrivacyPolicy = () => {
         </p>
       </section>
 
+      {/* Section with contact information */}
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Kontakt</h2>
         <p className="text-lg text-gray-600">
@@ -98,4 +110,5 @@ const PrivacyPolicy = () => {
   );
 };
 
+// Export the PrivacyPolicy component as the default export
 export default PrivacyPolicy;
