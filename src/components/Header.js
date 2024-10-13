@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
-import Dropdown from './Dropdown'; // Pfad anpassen
+import Dropdown from '@components/Dropdown'; // Pfad anpassen
 import { supabase } from '@lib/supabaseClient'; // Supabase-Client importieren
 
 const Header = () => {
