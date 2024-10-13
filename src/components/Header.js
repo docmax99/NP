@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
 import Dropdown from './Dropdown'; // Pfad anpassen
@@ -7,48 +8,22 @@ import { supabase } from './lib/supabaseClient'; // Supabase-Client importieren
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Zustand für Login-Status
   const [profileImageUrl, setProfileImageUrl] = useState(null); // Zustand für das Profilbild
-  const [userId, setUserId] = useState(null); // Zustand für die richtige User-ID
 
   // Check if user is logged in and get profile image URL
   useEffect(() => {
     const checkUserSession = async () => {
-      const { data: sessionData, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error('Error fetching session data:', error);
-        return;
-      }
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
 
-      const authUser = sessionData?.session?.user;
-
-      if (authUser) {
+      if (user) {
         setIsLoggedIn(true);
-
-        // Hole die korrekte User-ID aus der `public.User` Tabelle basierend auf der Authentifizierungs-E-Mail
-        const { data: userData, error: userError } = await supabase
-          .from('User')
-          .select('id') // Hole nur die ID
-          .eq('Email', authUser.email) // E-Mail muss übereinstimmen
-          .single(); // Wir erwarten nur einen Benutzer
-
-        if (userError || !userData) {
-          console.error('Error fetching user from public.User table:', userError);
-          return;
-        }
-
-        setUserId(userData.userId); // Speichern der korrekten User-ID
-
-        // Generiere die URL basierend auf der korrekten User-ID
-        const { data, error: imageUrlError } = await supabase
+        // Das Bild ist direkt unter dem Dateinamen der User-ID gespeichert
+        const { data: imageUrl } = await supabase
           .storage
           .from('Users')
-          .getPublicUrl(`${userData.id}Profilepic`);
+          .getPublicUrl(`${user.id}Profilepic`);
 
-        if (imageUrlError) {
-          console.error('Error fetching profile image URL:', imageUrlError);
-        } else {
-          console.log('Generated profile image URL:', data.publicUrl); // Debugging der URL
-          setProfileImageUrl(data.publicUrl); // Hier wird die URL gesetzt
-        }
+        setProfileImageUrl(imageUrl.publicUrl);
       }
     };
     checkUserSession();
@@ -67,7 +42,7 @@ const Header = () => {
       <div className="flex items-center space-x-4">
         <Link href="/app/home">
           <div className="flex items-center cursor-pointer">
-            <img src="/Images/NettePlaezte_logo.svg" width={35} height={35} alt="Logo" />
+            <Image src="/Images/NettePlaezte_logo.svg" width={35} height={35} alt="Logo" />
             <span className="text-2xl font-bold text-white ml-2">Nette Plätze</span>
           </div>
         </Link>
@@ -96,7 +71,7 @@ const Header = () => {
             </div>
             {profileImageUrl && (
               <div className="flex items-center">
-                <img
+                <Image
                   src={profileImageUrl}
                   alt="Profilbild"
                   width={40}

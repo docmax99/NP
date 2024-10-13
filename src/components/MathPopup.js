@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 
 // Hilfsfunktion zur Generierung einer zufälligen linearen Gleichung wie "ax + b = c"
 const generateRandomEquation = () => {
-  const a = Math.floor(Math.random() * 10) + 1; // Zufälliger Koeffizient
-  const b = Math.floor(Math.random() * 10); // Zufällige Konstante
-  const c = Math.floor(Math.random() * 50) + 10; // Zufälliges Ergebnis
+  const a = Math.floor(Math.random() * 10) + 1; // Zufälliger Koeffizient zwischen 1 und 10
+  const b = Math.floor(Math.random() * 10); // Zufällige Konstante zwischen 0 und 9
+  const c = Math.floor(Math.random() * 50) + 10; // Zufälliges Ergebnis zwischen 10 und 59
   return { a, b, c };
 };
 
@@ -15,25 +15,27 @@ const calculateX = (a, b, c) => {
 };
 
 const MathPopup = ({ onClose }) => {
-  const [equation, setEquation] = useState(generateRandomEquation());
-  const [userAnswer, setUserAnswer] = useState('');
-  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [equation, setEquation] = useState(generateRandomEquation()); // Initialisiere die Gleichung
+  const [userAnswer, setUserAnswer] = useState(''); // Zustand für die Benutzereingabe
+  const [feedbackMessage, setFeedbackMessage] = useState(''); // Zustand für die Rückmeldung
   const router = useRouter(); // Verwende den Next.js-Router für die Weiterleitung
 
+  // Aktualisiere die Benutzereingabe
   const handleInputChange = (e) => {
     setUserAnswer(e.target.value);
   };
 
+  // Überprüfe die Benutzereingabe
   const handleSubmit = () => {
-    const correctX = calculateX(equation.a, equation.b, equation.c);
-    if (parseFloat(userAnswer) === correctX) {
-      setFeedbackMessage('🎉 Richtig! Gut gemacht.');
+    const correctX = calculateX(equation.a, equation.b, equation.c); // Berechne den korrekten Wert von x
+    if (parseFloat(userAnswer) === correctX) { // Überprüfe, ob die Eingabe korrekt ist
+      setFeedbackMessage('🎉 Richtig! Gut gemacht.'); // Setze positive Rückmeldung
       setTimeout(() => {
         onClose(); // Schließt das Popup
         router.push('/app/home'); // Leitet zur gewünschten Seite weiter
       }, 1000); // Nach 1 Sekunde wird weitergeleitet
     } else {
-      setFeedbackMessage(`❌ Falsch! Der richtige Wert von x ist ${correctX}.`);
+      setFeedbackMessage(`❌ Falsch! Der richtige Wert von x ist ${correctX}.`); // Setze negative Rückmeldung
     }
   };
 
@@ -47,7 +49,7 @@ const MathPopup = ({ onClose }) => {
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <mrow className="text-2xl">
               <mn>{equation.a}</mn>
-              <mo>&#x2062;</mo> {/* invisible multiplication operator */}
+              <mo>&#x2062;</mo> {/* unsichtbarer Multiplikationsoperator */}
               <mi>x</mi>
               <mo>+</mo>
               <mn>{equation.b}</mn>
