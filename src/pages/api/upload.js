@@ -1,5 +1,5 @@
 // pages/api/upload.js
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '@lib/supabaseClient';
 import nextConnect from 'next-connect';
 import multer from 'multer';
 

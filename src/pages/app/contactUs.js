@@ -57,7 +57,7 @@ const ContactUs = () => {
         <p className="text-lg text-gray-600">
           For any technical issues or support, you can reach out to our support team at: 
           <br />
-          <strong>Email:</strong> support@awesomewebsite.com
+          <strong>Email :</strong> support@awesomewebsite.com
           <br />
           We're always here to help, even when your code refuses to compile!
         </p>

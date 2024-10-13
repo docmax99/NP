@@ -63,10 +63,12 @@ const Impressum = () => {
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">Verantwortlich für Zahlungen:</h2>
         <p className="text-lg text-gray-600">
-          Das machen wir selbst!
+          Das machen wir schon selbst!
         </p>
       </section>
+      
     </div>
+    
   );
 };
 

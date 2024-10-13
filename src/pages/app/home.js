@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { getAllHouses } from "@services/houseService";
 import Header from '@components/Header';
-import SearchBar from '@components/SearchBar';
+import SearchBar from '@components/searchBar';
 import FeaturedListings from '@components/featuredListings';
 import Footer from '@components/Footer';
 import CookieBanner from '@components/CookieBanner';
@@ -10,7 +10,7 @@ import CookieBanner from '@components/CookieBanner';
 export default function Home() {
   // State to store the list of houses
   const [houses, setHouses] = useState([]);
-  
+    
   // Reference for the scroll container element
   const scrollContainerRef = useRef(null);
   
