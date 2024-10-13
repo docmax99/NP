@@ -1,8 +1,9 @@
-
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
-export default function ListingInfo({house}) {
+// Hauptkomponente für die Anzeige von Hausinformationen
+export default function ListingInfo({ house }) {
+  // Extrahiere Hausinformationen oder setze Standardwerte
   const Badezimmer = house ? house.Badezimmer : 0; 
   const Schlafzimmer = house ? house.Schlafzimmer : 0;
   const Betten = house ? house.Betten : 0;
@@ -10,30 +11,25 @@ export default function ListingInfo({house}) {
   const Bewertung = house ? house.Bewertungen_int : 0;
   const Titel_long = house ? house.Titel_long : 'Unbekanntes Haus';
 
-  
-    const [randomNumber, setRandomNumber] = useState(4.98);
-  
-    useEffect(() => {
-      // Array mit 7 möglichen Zahlen
-      const possibleNumbers = [4.98, 3.87, 5.12, 4.65, 4.33, 4.89, 5.00];
-  
-      // Zufällig eine Zahl aus dem Array auswählen
-      const randomIndex = Math.floor(Math.random() * possibleNumbers.length);
-      setRandomNumber(possibleNumbers[randomIndex]);
-    }, []);
-  
-  
+  // Zustand für eine zufällige Bewertungszahl
+  const [randomNumber, setRandomNumber] = useState(4.98);
 
+  // Effekt, der beim ersten Rendern eine zufällige Bewertungszahl setzt
+  useEffect(() => {
+    // Array mit möglichen Bewertungszahlen
+    const possibleNumbers = [4.98, 3.87, 5.12, 4.65, 4.33, 4.89, 5.00];
 
+    // Zufällig eine Zahl aus dem Array auswählen
+    const randomIndex = Math.floor(Math.random() * possibleNumbers.length);
+    setRandomNumber(possibleNumbers[randomIndex]);
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg">
       {/* Unterkunft Titel und Details */}
-      <div className="mb-4" >
+      <div className="mb-4">
         <h1 className="text-2xl font-bold">{Titel_long}</h1>
         <span className="text-gray-600">{`${Gästeanzahl}`} Gäste · {`${Schlafzimmer}`} Schlafzimmer · {`${Betten}`} Betten · {`${Badezimmer}`} Badezimmer</span>
-        
-        
       </div>
 
       {/* Bewertung und Favoriten */}

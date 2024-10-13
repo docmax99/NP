@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 
+// SearchBar-Komponente, die Eingabefelder und einen Such-Button enthält
 const SearchBar = ({ inputData, handleChange, handleSearch }) => {
   const [minDepartureDate, setMinDepartureDate] = useState('');
 
-  // Aktualisiert `minDepartureDate`, wenn `arrivalDate` geändert wird
+  // useEffect-Hook, der `minDepartureDate` aktualisiert, wenn `arrivalDate` geändert wird
   useEffect(() => {
     if (inputData.arrivalDate) {
       setMinDepartureDate(inputData.arrivalDate);
@@ -34,7 +35,7 @@ const SearchBar = ({ inputData, handleChange, handleSearch }) => {
       if (value <= inputData.arrivalDate) return;
     }
 
-    handleChange(e);
+    handleChange(e); // Ruft die übergebene handleChange-Funktion auf
   };
 
   // Funktion zur Einschränkung von Zeichen in den Eingabefeldern
