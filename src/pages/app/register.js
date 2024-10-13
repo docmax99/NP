@@ -1,7 +1,7 @@
   import { useState } from 'react';
   import { useRouter } from 'next/router';
-  import { supabase } from '../../components/lib/supabaseClient';
-  import BackButton from '../../components/BackButton'; // BackButton-Komponente importieren
+  import { supabase } from '@components/lib/supabaseClient';
+  import BackButton from '@components/BackButton'; // BackButton-Komponente importieren
 
   export default function Register() {
     const router = useRouter();

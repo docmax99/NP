@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
 import Dropdown from './Dropdown'; // Pfad anpassen
-import { supabase } from './lib/supabaseClient'; // Supabase-Client importieren
+import { supabase } from '@lib/supabaseClient'; // Supabase-Client importieren
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Zustand für Login-Status

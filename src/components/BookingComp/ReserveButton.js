@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../../components/lib/supabaseClient';
+import { supabase } from '@components/lib/supabaseClient';
 import { format } from 'date-fns';
 import Confetti from 'react-confetti'; // Feuerwerk-Effekte
 import useSound from 'use-sound'; // Sound-Effekte (npm install use-sound)

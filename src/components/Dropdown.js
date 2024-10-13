@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
-import { supabase } from './lib/supabaseClient';
+import { supabase } from '@lib/supabaseClient';
 
 export default function Dropdown() {
   // State to manage dropdown open/close status

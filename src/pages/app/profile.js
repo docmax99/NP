@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../../components/lib/supabaseClient';
+import { supabase } from '@components/lib/supabaseClient';
 import Image from 'next/image';
 import { useRouter } from 'next/router'; // Router importieren
 

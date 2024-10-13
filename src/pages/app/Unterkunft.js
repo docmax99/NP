@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import BookingCard from '../../components/BookingCard';
-import ListingInfo from '../../components/ListingInfos';
+import BookingCard from '@components/BookingCard';
+import ListingInfo from '@components/ListingInfos';
 import { useRouter } from 'next/router';
-import MapEmbed from '../../components/MapEmbed';
-import Header from '../../components/Header';
-import { supabase } from '../../components/lib/supabaseClient';
-import WeatherComponent from '../../components/WeatherComponent';
-import AddOns from '../../components/AddOns';
-import Footer from '../../components/Footer';
+import MapEmbed from '@components/MapEmbed';
+import Header from '@components/Header';
+import { supabase } from '@components/lib/supabaseClient';
+import WeatherComponent from '@components/WeatherComponent';
+import AddOns from '@components/AddOns';
+import Footer from '@components/Footer';
 
 export default function Unterkunft() {
   // State variables

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../../components/lib/supabaseClient';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import MathPopup from '../../components/MathPopup'; // Import MathPopup component
+import { supabase } from '@components/lib/supabaseClient';
+import Header from '@components/Header';
+import Footer from '@components/Footer';
+import MathPopup from '@components/MathPopup'; // Import MathPopup component
 
 export default function InsertHouse() {
   // Initialize form data state with default values

@@ -1,7 +1,7 @@
 import { useState } from 'react'; // useState-Hook von React importieren
 import { useRouter } from 'next/router'; // useRouter-Hook von Next.js importieren
-import { supabase } from '../../components/lib/supabaseClient'; // Supabase-Client importieren
-import BackButton from '../../components/BackButton'; // BackButton-Komponente importieren
+import { supabase } from '@components/lib/supabaseClient'; // Supabase-Client importieren
+import BackButton from '@components/BackButton'; // BackButton-Komponente importieren
 import Cookies from 'js-cookie'; // js-cookie-Bibliothek importieren
 
 export default function Login() {
@@ -33,8 +33,7 @@ export default function Login() {
     }
   };
 
-  return (
-    
+  return (   
     <div className="relative h-screen bg-fixed bg-[url('/Images/Haus_am_See.jpg')] bg-cover bg-center flex items-center justify-center">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
       {/* Dein anderer Inhalt kommt hier hin */}

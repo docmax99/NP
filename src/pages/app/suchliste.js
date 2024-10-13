@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import Header from '../../components/Header';
+import Header from '@components/Header';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { getAllHouses } from '../../services/houseService';
-import { supabase } from '../../components/lib/supabaseClient';
-import Footer from '../../components/Footer';
+import { getAllHouses } from '@services/houseService';
+import { supabase } from '@components/lib/supabaseClient';
+import Footer from '@components/Footer';
 
 export default function Suchliste() {
   const router = useRouter();

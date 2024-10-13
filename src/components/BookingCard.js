@@ -1,9 +1,9 @@
 // components/BookingCard.js
 import { useState } from 'react';
-import PriceSection from './BookingComp/PriceSection';
-import BookingInputs from './BookingComp/BookingInputs';
-import ReserveButton from './BookingComp/ReserveButton';
-import PriceBreakdown from './BookingComp/PriceBreakdown';
+import PriceSection from '@BookingComp/PriceSection';
+import BookingInputs from '@BookingComp/BookingInputs';
+import ReserveButton from '@BookingComp/ReserveButton';
+import PriceBreakdown from '@BookingComp/PriceBreakdown';
 
 export default function BookingCard({ house, userId, Ankunft, Abgang, GästeZahl, addOnPrice }) {
   // Initialisiere State-Werte

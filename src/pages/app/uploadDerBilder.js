@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { supabase } from '../../lib/supabaseClient';
-import ImageUpload from '../../components/ImageUpload';
+import { supabase } from '@lib/supabaseClient';
+import ImageUpload from '@components/ImageUpload';
 
 // Hauptkomponente für das Hochladen von Wohnungsbildern
 export default function UploadDerBilder() {
