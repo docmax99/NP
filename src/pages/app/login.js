@@ -22,7 +22,7 @@ export default function Login() {
 
     if (error) {
       // Fehlermeldung setzen, falls ein Fehler auftritt
-      setErrorMessage('Anmeldefehler. Bitte überprüfe deine Eingaben.');
+      setErrorMessage('"Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse. Schauen Sie dafür in Ihrem Posteingang nach, insbesondere im Spam-Ordner. :)".');
     } else {
       // Speichern des Tokens in einem Cookie für 7 Tage
       Cookies.set('sb-access-token', data.session.access_token, { expires: 7 });
