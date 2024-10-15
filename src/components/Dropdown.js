@@ -93,9 +93,7 @@ export default function Dropdown() {
 
   // Menu items
   const menuItems = [
-    { href: '/app/register', label: 'Registrieren' },
-    { href: '#', label: 'Hilfe' },
-  ];
+    { href: '/app/register', label: 'Registrieren' }  ];
 
   // If logged in, add "Haus erstellen" option
   if (isLoggedIn) {
