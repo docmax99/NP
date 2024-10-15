@@ -84,7 +84,7 @@ const Header = () => {
             </div>
             {profileImageUrl && (
               <div className="flex items-center">
-                <Image
+                <img
                   src={profileImageUrl}
                   alt="Profilbild"
                   width={40}
