@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
-import Dropdown from '@components/Dropdown'; // Pfad anpassen
-import { supabase } from '@lib/supabaseClient'; // Supabase-Client importieren
+import Dropdown from '@components/Dropdown';
+import { supabase } from '@lib/supabaseClient';
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Zustand für Login-Status
-  const [profileImageUrl, setProfileImageUrl] = useState(null); // Zustand für das Profilbild
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
 
-  // Check if user is logged in and get profile image URL
   useEffect(() => {
     const checkUserSession = async () => {
       const { data: sessionData } = await supabase.auth.getSession();
@@ -17,11 +16,29 @@ const Header = () => {
 
       if (user) {
         setIsLoggedIn(true);
-        // Das Bild ist direkt unter dem Dateinamen der User-ID gespeichert
-        const { data: imageUrl } = await supabase
+
+        // Hole die korrekte User-ID aus der "User"-Tabelle
+        const { data: userData, error } = await supabase
+          .from('User')
+          .select('id')
+          .eq('Email', user.email)
+          .single();
+
+        if (error) {
+          console.error('Fehler beim Abrufen der User-ID:', error.message);
+          return;
+        }
+
+        // Verwende die User-ID, um das Profilbild abzurufen
+        const { data: imageUrl, error: imageError } = await supabase
           .storage
           .from('Users')
-          .getPublicUrl(`${user.id}Profilepic`);
+          .getPublicUrl(`${userData.id}Profilepic`);
+
+        if (imageError) {
+          console.error('Fehler beim Abrufen der Bild-URL:', imageError.message);
+          return;
+        }
 
         setProfileImageUrl(imageUrl.publicUrl);
       }
@@ -29,16 +46,14 @@ const Header = () => {
     checkUserSession();
   }, []);
 
-  // Logout-Funktion
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setIsLoggedIn(false); // Zustand zurücksetzen nach dem Logout
-    window.location.href = '/app/login'; // Weiterleitung zur Login-Seite nach dem Logout
+    setIsLoggedIn(false);
+    window.location.href = '/app/login';
   };
 
   return (
     <header className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 flex justify-between items-center border-b border-gray-200 sticky top-0 z-50 shadow-lg">
-      {/* Logo und Link zur Startseite */}
       <div className="flex items-center space-x-4">
         <Link href="/app/home">
           <div className="flex items-center cursor-pointer">
@@ -48,7 +63,6 @@ const Header = () => {
         </Link>
       </div>
 
-      {/* Navigation Links */}
       <nav className="hidden md:flex items-center space-x-8">
         <Link href="/app/suchliste">
           <span className="text-lg font-semibold hover:text-indigo-200 transition duration-300">Entdecken</span>
@@ -58,7 +72,6 @@ const Header = () => {
         </Link>
       </nav>
 
-      {/* Login/Logout Symbol, Profilbild und Dropdown-Menü */}
       <div className="flex items-center space-x-6">
         {isLoggedIn ? (
           <>
